@@ -1,4 +1,4 @@
-//shared.js 2222.9.2
+//shared.js 1.3
 window.sharedState = window.sharedState || {};
 
 window.addEventListener('message', function(event) {
@@ -22,4 +22,3 @@ function updateSharedState(newState) {
     sharedState = {...sharedState, ...newState};
     broadcastState();
 }
-
