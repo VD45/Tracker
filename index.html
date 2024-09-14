@@ -1,0 +1,2768 @@
+<!--EnergyDashboard 222.9.0-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2ecc71">
+    <meta name="description" content="Energy Dashboard PWA">
+
+<style>
+:root {
+    --parent-header-height: 41px;
+    --sub-header-height: 41px;
+    --total-header-height: calc(var(--parent-header-height) + var(--sub-header-height));
+    --sticky-row-height: 50px;
+}
+/* Main Module Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Rajdhani', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    overflow: hidden;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#menu-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+}
+
+#left-menu, #right-menu {
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    flex: 1;
+}
+
+#right-menu {
+    justify-content: flex-end;
+}
+
+#logo-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
+}
+
+#logo-container img {
+    height: 40px;
+    width: auto;
+}
+
+.menu-button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.menu-button:hover, .menu-button.active {
+    color: #3498db;
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+#main-menu {
+    position: relative;
+    z-index: 20;
+}
+
+#main-menu-button {
+    font-size: 24px;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#main-menu-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+#main-menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 30;
+    min-width: 220px;
+    padding: 8px 0;
+    margin-top: 10px;
+}
+
+#main-menu-dropdown.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#main-menu-dropdown .menu-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    padding: 12px 20px;
+    border: none;
+    background-color: transparent;
+    color: #333;
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#main-menu-dropdown .menu-button:hover {
+    background-color: #f0f8ff;
+    color: #3498db;
+}
+
+#main-menu-dropdown .menu-button::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#main-menu-dropdown .menu-button[onclick*="history"]::before {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M13 3a9 9 0 019 9h-2a7 7 0 00-7-7V3z"/><path d="M12 8v5l4.25 2.52.75-1.28-3.5-2.07V8H12z"/><path d="M2 12c0 5.523 4.477 10 10 10s10-4.477 10-10h-2a8 8 0 11-8-8v2a6 6 0 106 6h-2a4 4 0 11-4-4V6a6 6 0 016 6h2a8 8 0 00-16 0z"/></svg>');
+}
+
+#main-menu-dropdown .menu-button[onclick*="save"]::before {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>');
+}
+
+#main-menu-dropdown .menu-button[onclick*="new"]::before {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>');
+}
+
+#main-menu-dropdown .menu-button[onclick*="exit"]::before {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-8.5 14l-4.5-4.5 1.5-1.5 3 3 7-7 1.5 1.5-8.5 8.5z"/></svg>');
+}
+
+#main-menu-dropdown .menu-separator {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 8px 0;
+}
+
+#main-content-container {
+    position: relative;
+    height: 50vh;
+    min-height: 25px;
+    max-height: calc(100vh - 50px);
+    overflow: visible;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    margin-bottom: 0;
+    z-index: 5;
+    transition: height 0.1s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.content-wrapper {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#resize-handle {
+    width: 100%;
+    height: 10px;
+    background-color: rgba(52, 152, 219, 0.5);
+    cursor: ns-resize;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+}
+
+#resize-handle:hover {
+    background-color: rgba(52, 152, 219, 0.8);
+}
+
+#resize-handle::after {
+    content: '↕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background-color: #d0d0d0;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: #3498db;
+    z-index: 11;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+#resize-handle:hover::after {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.main-content {
+    display: none;
+    padding: 20px;
+    width: 100%;
+
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+object.main-content {
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+}
+
+.main-content.active {
+    display: block;
+}
+
+#help-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 5;
+}
+
+#help-toggle::before {
+    content: '?';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+#help-toggle:hover::after {
+    content: 'Toggle Help';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 5;
+}
+
+#help-toggle.red {
+    background-color: #e74c3c;
+    color: white;
+}
+
+#help-toggle.blue {
+    background-color: #3498db;
+    color: white;
+}
+
+#help-toggle.active::before {
+    transform: translate(-50%, -50%) rotate(360deg);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+}
+
+#help-toggle.active {
+    animation: pulse 2s infinite;
+}
+
+.close-button {
+    position: sticky;
+    top: 10px;
+    float: right;
+    padding: 8px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.close-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+.remaining-content {
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 25px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Ensure full width */
+}
+/* Unified Bar Styles */
+.unified-bar {
+    margin: 20px 20px 0;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 15px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.unified-bar-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.unified-bar-row {
+    display: flex;
+    align-items: stretch;
+    background-color: #f8f9fa;
+    margin-bottom: px;
+    border-radius: 5px;
+}
+
+.unified-bar-row:nth-child(even) {
+    background-color: #f0f4f8;
+}
+
+.unified-bar-cell {
+    flex: 1;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.unified-bar-cell:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 10%;
+    bottom: 10%;
+    width: 1px;
+    background-color: #e0e0e0;
+}
+
+.label-cell {
+    flex: 0 0 20%;
+    justify-content: flex-start;
+    font-weight: 600;
+}
+
+.unified-bar-header {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    margin-right: 10px;
+    fill: #3498db;
+}
+
+.unified-bar-label {
+    font-size: 14px;
+    color: #555;
+}
+
+.display-box {
+    width: 90%;
+    padding: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background-color: inherit;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+}
+
+.input-control {
+    cursor: pointer;
+    user-select: none;
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+}
+
+.input-control:hover {
+    transform: scale(1.1);
+}
+
+.input-control.decrease:hover, .input-control.decrease:active {
+    background-color: #e74c3c;
+    color: #ffffff;
+}
+
+.input-control.increase:hover, .input-control.increase:active {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+.input-container input {
+    width: 60px;
+    height: 30px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin: 0;
+    padding: 0 5px;
+    -moz-appearance: textfield;
+    background-color: inherit;
+}
+
+.unit-label {
+    font-size: 14px;
+    color: #666;
+    margin-left: 5px;
+}
+
+.header-row {
+    background-color: transparent;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.button-group {
+    text-align: right;
+}
+
+.button-group button {
+    margin-left: 10px;
+}
+
+#history-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#history-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#history-list li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Table Styles */
+.table-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: calc(100% - 40px);
+    margin: 20px 20px 0;
+}
+
+.table-scroll {
+    overflow-y: auto;
+    flex: 1;
+    position: relative;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    table-layout: fixed;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: #f8f9fa;
+}
+
+thead tr:first-child {
+    height: var(--parent-header-height);
+}
+
+thead tr:last-child {
+    height: var(--sub-header-height);
+}
+
+.parent-header {
+    background: linear-gradient(to bottom, #4a90e2, #357abd);
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    font-size: 1.1em;
+    letter-spacing: 0.5px;
+}
+
+.parent-header th {
+    padding: 12px 10px;
+    border-bottom: 2px solid #2c6aa0;
+    color: #64b5f6;
+}
+
+thead tr:last-child {
+    background-color: #f0f0f0;
+    font-weight: 600;
+}
+
+thead tr:last-child th {
+    padding: 10px 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+thead tr:last-child th:hover {
+    background-color: #e0e0e0;
+}
+
+.sticky-row {
+    position: sticky;
+    top: var(--total-header-height);
+    background: linear-gradient(to bottom, #f9f9f9, #f0f0f0);
+    font-weight: bold;
+    z-index: 10;
+    height: var(--sticky-row-height);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sticky-row td {
+    font-weight: 600;
+    color: #333;
+    padding: 12px 10px;
+    border-bottom: 2px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sticky-row td:hover {
+    background-color: #e8e8e8;
+    transition: background-color 0.3s ease;
+}
+
+.sticky-row .consumption-column { border-left: 3px solid #4a90e2; }
+.sticky-row .generation-column { border-left: 3px solid #2ecc71; }
+.sticky-row .performance-column { border-left: 3px solid #f39c12; }
+.sticky-row .state-column { border-left: 3px solid #e74c3c; }
+
+.period-column { 
+    width: 7%;
+    min-width: 100px;
+}
+
+.data-column { 
+    width: calc(81% / 9);
+}
+
+.state-column { 
+    width: 12%;
+}
+
+.unit-icon {
+    display: inline-block;
+    padding: 2px 4px;
+    margin-left: 4px;
+    font-size: 0.7em;
+    border-radius: 3px;
+    color: #333;
+}
+
+.info-cell {
+    position: relative;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.tooltip {
+    visibility: hidden;
+    position: fixed;
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    z-index: 1000;
+    font-size: 0.8em;
+    white-space: pre-line;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    max-width: 300px;
+}
+
+.section-divider {
+    border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+tbody tr td.section-divider {
+    border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+thead tr th.section-divider,
+thead tr:last-child th {
+    border-left: none;
+}
+
+tbody tr:not(.sticky-row) .period-column { 
+    background: linear-gradient(to bottom, #f8f8f8, #f0f0f0);
+}
+
+tbody tr:not(.sticky-row) .consumption-column { 
+    background: linear-gradient(to bottom, #f0f8ff, #e6f3ff);
+}
+
+tbody tr:not(.sticky-row) .consumption-column:hover { 
+    background: linear-gradient(to top, #e6f3ff, #d1e8ff);
+}
+
+tbody tr:not(.sticky-row) .generation-column { 
+    background: linear-gradient(to bottom, #f0fff0, #e6fff0);
+}
+
+tbody tr:not(.sticky-row) .generation-column:hover { 
+    background: linear-gradient(to top, #e6fff0, #d1ffd1);
+}
+
+tbody tr:not(.sticky-row) .performance-column { 
+    background: linear-gradient(to bottom, #fff8f0, #fff0e6);
+}
+
+tbody tr:not(.sticky-row) .performance-column:hover { 
+    background: linear-gradient(to top, #fff0e6, #ffe8d1);
+}
+
+tbody tr:not(.sticky-row) .state-column { 
+    background: linear-gradient(to bottom, #fff0f0, #ffe6e6);
+}
+
+tbody tr:not(.sticky-row) .state-column:hover { 
+    background: linear-gradient(to top, #ffe6e6, #ffd1d1);
+}
+
+.consumption-column .unit-icon {
+    background-color: #e6f3ff;
+}
+
+.generation-column .unit-icon {
+    background-color: #e6fff0;
+}
+
+.performance-column .unit-icon {
+    background-color: #fff0e6;
+}
+
+.state-column .unit-icon {
+    background-color: #ffe6e6;
+}
+
+#timePeriodSelect {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 95%;
+    background-position-y: 50%;
+    cursor: pointer;
+}
+
+#timePeriodSelect:hover, #timePeriodSelect:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+#timePeriodSelect option {
+    padding: 8px;
+}
+
+#loadingIndicator {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(--50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.info-icon {
+    cursor: help;
+    color: #007bff;
+    margin-left: 5px;
+}
+
+.state-column.negative {
+    background-color: #FFCCCB !important;
+    color: #8B0000;
+}
+
+.state-column.zero {
+    background-color: #808080 !important;
+    color: #FFFFFF;
+}
+
+.state-column.positive {
+    background-color: #90EE90 !important;
+    color: #006400;
+}
+
+.unified-bar-and-table-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Custom Info Styles */
+#custom-info-container {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.custom-info-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-info-content {
+    position: relative;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#custom-info-container.active {
+    display: block;
+}
+
+#custom-info-container.active .custom-info-overlay {
+    opacity: 1;
+}
+
+#custom-info-container.active .custom-info-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+#resize-handle {
+    z-index: 1000;
+}
+</style>
+<script src="shared.js"></script>
+<style>
+  .metrics-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .metrics-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 80%;
+    max-height: 80%;
+    overflow: auto;
+  }
+
+.menu-button.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.metrics-container {
+    display: flex;
+    height: calc(100% - 40px); /* Subtract the height of the h2 */
+    background-color: #f5f7fa;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.metrics-left-column {
+    width: 30%;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.metrics-right-column {
+    width: 70%;
+    padding: 20px;
+    background-color: #ffffff;
+    overflow-y: auto;
+}
+
+.metrics-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#stateChart {
+    flex-grow: 1;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.metrics-menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.metrics-menu-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.metrics-menu-item:hover {
+    background-color: #f0f4f8;
+}
+
+.metrics-menu-item.active {
+    background-color: #3498db;
+    color: white;
+    box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
+}
+
+.metrics-menu-item::before {
+    content: '📊';
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.metrics-content h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.metrics-content p {
+    color: #34495e;
+    line-height: 1.6;
+}
+
+#resize-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 9999;
+}
+
+.timeline-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+            position: relative;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .timeline-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            width: 160%;
+        }
+
+        #timeSlider {
+            flex-grow: 1;
+  margin-right: 10px;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px;
+  background: #020202;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s;
+        }
+
+        #timeSlider:hover {
+            opacity: 1;
+        }
+
+        #timeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        #timeSlider::-moz-range-thumb {
+            width: 15px;
+  height: 15px;
+  border-radius: 21%;
+  background: #3498DB;
+  cursor: pointer;
+        }
+
+        #yearDisplay {
+            white-space: nowrap;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .period-column {
+            overflow: visible;
+            position: relative;
+        }
+
+        .parent-header th {
+            height: 60px;
+            vertical-align: bottom;
+        }
+
+</style>
+<script src="shared.js"></script>
+</head>
+<body>
+ <h1>Energy Dashboard</h1>
+    <!-- The "Install" button -->
+    <button id="installApp" style="display: none;">Install App</button>
+
+     <div class="page-container">
+        <div id="menu-container">
+            <div id="left-menu">
+                <div id="main-menu">
+                    <button id="main-menu-button" class="menu-button">≡</button>
+                    <div id="main-menu-dropdown">
+                        <button class="menu-button" onclick="handleMainMenuAction('history')">History</button>
+                        <button class="menu-button" onclick="handleMainMenuAction('save')">Save Configuration</button>
+                        <button class="menu-button" onclick="handleMainMenuAction('new')">+ New Configuration</button>
+                        <div class="menu-separator"></div>
+                        <button class="menu-button" onclick="handleMainMenuAction('exit')">Exit</button>
+                    </div>
+                </div>
+                <button class="menu-button" onclick="showContent('mainContentY', event)">by Demand</button>
+                <button class="menu-button" onclick="showContent('mainContentX', event)">by Availability</button>
+                <button class="menu-button" onclick="showContent('mainContentZ', event)">for AI</button>
+                <button class="menu-button" onclick="showContent('mainContentA', event)">OPEX & CAPEX</button>
+            </div>
+            <div id="logo-container">
+                <img src="Images/Powered by Nobelity.png" alt="Powered by Nobelity">
+            </div>
+            <div id="right-menu">
+                <button class="menu-button active" onclick="showContent('mainContentC')">Metrics</button>
+                <button class="menu-button" onclick="showContent('mainContentD')">LCOS</button>
+                <button id="help-toggle" class="red">?</button>
+            </div>
+        </div>
+
+        <div id="main-content-container">
+            <div class="content-wrapper">
+                <object id="demandModule" type="text/html" data="ByDemandModule.html" class="main-content" style="width: 100%; height: 100%; border: none;"></object>
+                <object id="availabilityModule" type="text/html" data="ByAvailabilityModule.html" class="main-content" style="width: 100%; height: 100%; border: none;"></object>
+                <object id="aiModule" type="text/html" data="ForAIModule.html" class="main-content" style="width: 100%; height: 100%; border: none;"></object>
+                <object id="opexCapexModule" type="text/html" data="OPEXCAPEXModule.html" class="main-content" style="width: 100%; height: 100%; border: none;"></object>
+                <div id="mainContentC" class="main-content active"></div>
+                <div id="mainContentD" class="main-content"></div>
+                <div id="custom-info-container" class="custom-info">
+                    <div class="custom-info-overlay"></div>
+                    <div class="custom-info-content">
+                        <button class="close-button">Got it! Close</button>
+                        <div id="custom-info-content"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="resize-handle"></div>
+        </div>
+
+        <div class="remaining-content" style="display: flex; flex-direction: column;">
+            <div class="unified-bar-and-table-container">
+                <div class="unified-bar">
+                    <div class="unified-bar-grid">
+                        <div class="unified-bar-row header-row">
+                            <div class="unified-bar-cell label-cell"></div>
+                            <div class="unified-bar-cell">
+                                <div class="unified-bar-header">
+                                    <svg class="icon electricity-icon" viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    Generated ELECTRICITY
+                                </div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="unified-bar-header">
+                                    <svg class="icon hydrogen-icon" viewBox="0 0 24 24" width="24" height="24">
+                                        <circle cx="12" cy="12" r="8"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    Produced HYDROGEN
+                                </div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="unified-bar-header">
+                                    <svg class="icon cooling-icon" viewBox="0 0 24 24" width="24" height="24">
+                                        <path d="M12 2L9.5 9 2 12l7.5 3L12 22l2.5-7L22 12l-7.5-3z"/>
+                                    </svg>
+                                    Generated COOLING
+                                </div>
+                            </div>
+                        </div>
+                        <div class="unified-bar-row">
+                            <div class="unified-bar-cell label-cell">
+                                <div class="unified-bar-label">Generation Cost</div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="display-box" id="elecGenCost">0.05 [$/kWh]</div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="display-box" id="hydroGenCost">2.00 [$/kg]</div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="display-box" id="coolGenCost">0.03 [$/kWh]</div>
+                            </div>
+                        </div>
+                        <div class="unified-bar-row">
+                            <div class="unified-bar-cell label-cell">
+                                <div class="unified-bar-label">At added cost (Profit)</div>
+                            </div>
+                           <div class="unified-bar-cell">
+                                <div class="input-container">
+                                    <div class="input-control decrease" onmousedown="startHolding('elecProfit', -0.5)" onmouseup="stopHolding()">-</div>
+                                    <input id="elecProfit" type="number" value="50.0" step="0.5" min="0">
+                                    <div class="input-control increase" onmousedown="startHolding('elecProfit', 0.5)" onmouseup="stopHolding()">+</div>
+                                    <span class="unit-label">[%]</span>
+                                </div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="input-container">
+                                    <div class="input-control decrease" onmousedown="startHolding('hydroProfit', -0.5)" onmouseup="stopHolding()">-</div>
+                                    <input id="hydroProfit" type="number" value="50.0" step="0.5" min="0">
+                                    <div class="input-control increase" onmousedown="startHolding('hydroProfit', 0.5)" onmouseup="stopHolding()">+</div>
+                                    <span class="unit-label">[%]</span>
+                                </div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="input-container">
+                                   <div class="input-control decrease" onmousedown="startHolding('coolProfit', -0.5)" onmouseup="stopHolding()">-</div>
+                                    <input id="coolProfit" type="number" value="50.0" step="0.5" min="0">
+                                    <div class="input-control increase" onmousedown="startHolding('coolProfit', 0.5)" onmouseup="stopHolding()">+</div>
+                                    <span class="unit-label">[%]</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="unified-bar-row">
+                            <div class="unified-bar-cell label-cell">
+                                <div class="unified-bar-label">Selling Price</div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="display-box" id="elecSellingPrice">0.075 [$/kWh]</div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="display-box" id="hydroSellingPrice">3.00 [$/kg]</div>
+                            </div>
+                            <div class="unified-bar-cell">
+                                <div class="display-box" id="coolSellingPrice">0.045 [$/kWh]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div id="loadingIndicator">Loading...</div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr class="parent-header">
+                                    <th class="period-column">
+                                        <div class="timeline-container">
+                                            <span class="timeline-label" id="projectionLabel">Projection</span>
+                                            <div class="slider-container">
+                                                <input type="range" id="timeSlider" min="1" max="20" value="3">
+                                                <span id="yearDisplay">3 Year<span id="pluralS">s</span></span>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th colspan="3">Consumption</th>
+                                    <th colspan="3" class="section-divider">Generation</th>
+                                    <th colspan="3" class="section-divider">Performance Metrics</th>
+                                    <th class="state-column section-divider">State <span class="info-icon" title="The State represents the cumulative financial position, calculated daily based on Profit, CAPEX, and OPEX. It shows how each day's operations impact the overall financial health.">ⓘ</span></th>
+                                </tr>
+                                <tr>
+                                    <th class="period-column">
+                                        <select id="timePeriodSelect">
+    <option value="day">📅 Day</option>
+    <option value="week">📅 Week</option>
+    <option value="month">📅 Month</option>
+    <option value="year">📅 Year</option>
+</select>
+                                    </th>
+                                    <th class="consumption-column data-column">Elec <span class="unit-icon">kWh</span></th>
+                                    <th class="consumption-column data-column">TPFs <span class="unit-icon">$</span></th>
+                                    <th class="consumption-column data-column">Water <span class="unit-icon">m³</span></th>
+                                    <th class="generation-column data-column section-divider">Elec <span class="unit-icon">kWh</span></th>
+                                    <th class="generation-column data-column">H₂ <span class="unit-icon">kg</span></th>
+                                    <th class="generation-column data-column">Cool <span class="unit-icon">kWh</span></th>
+                                    <th class="performance-column data-column section-divider">OPEX <span class="unit-icon">$</span></th>
+                                    <th class="performance-column data-column">CAPEX <span class="unit-icon">$</span></th>
+                                    <th class="performance-column data-column">Revenew <span class="unit-icon">$</span></th>
+                                    <th class="state-column section-divider">Balance <span class="unit-icon">$</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Table rows will be dynamically generated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="save-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('save-modal')">&times;</span>
+                <h2>Save Configuration</h2>
+                <div class="input-group">
+                    <label for="config-name">Name this Configuration:</label>
+                    <input type="text" id="config-name" placeholder="Enter configuration name">
+                </div>
+                <div class="button-group">
+                    <button onclick="saveConfiguration()">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="exit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('exit-modal')">&times;</span>
+                <h2>Exit</h2>
+                <p id="exit-modal-message">Would you like to save changes?</p>
+                <div class="button-group">
+                    <button onclick="exitWithoutSaving()">No, Exit</button>
+                    <button onclick="exitWithSaving()">Yes, Save and Exit</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="history-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('history-modal')">&times;</span>
+                <h2>Configuration History</h2>
+                <ul id="history-list"></ul>
+            </div>
+        </div>
+
+        <div id="name-conflict-modal" class="modal">
+            <div class="modal-content">
+                <h2>Configuration Name Conflict</h2>
+                <p>A configuration with this name already exists. Please choose a different name:</p>
+                <input type="text" id="new-config-name" placeholder="Enter a new name">
+                <div class="button-group">
+                    <button onclick="resolveNameConflict()">Save</button>
+                    <button onclick="closeNameConflictModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tooltip" class="tooltip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.3.1/decimal.min.js"></script>
+<script src="shared.js"></script>
+<script>
+
+function createOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'resize-overlay';
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+let totalDays;
+let helpActive = false;
+let currentActiveMenu = 'mainContentY';
+let configurations = [];
+let isConfigurationSaved = false;
+let currentConfigName = '';
+let holdInterval = null;
+let customInfoContainer;
+let customInfoContent;
+let previousState = 0;
+
+const modeTimeSettings = {
+    'mainContentY': { years: 3, period: 'day' },
+    'mainContentX': { years: 3, period: 'day' },
+    'mainContentZ': { years: 3, period: 'day' }
+};
+
+let currentMode = 'mainContentY';
+
+function loadModuleContent(contentId) {
+    console.log('Loading module content for:', contentId);
+    let fileName;
+    switch(contentId) {
+        case 'mainContentY':
+            fileName = 'By Demand Module.html';
+            break;
+        case 'mainContentX':
+            fileName = 'By Availability Module.html';
+            break;
+        case 'mainContentZ':
+            fileName = 'ForAIModule.html';
+            break;
+        case 'mainContentA':
+            fileName = 'OPEX/CAPEX Module.html';
+            break;
+        default:
+            console.log('No file for contentId:', contentId);
+            return;
+    }
+
+    fetch(fileName)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(html => {
+            const contentElement = document.getElementById(contentId);
+            contentElement.innerHTML = html;
+            console.log('Module content loaded for:', contentId);
+            if (window.initializeModule) {
+                window.initializeModule(contentId);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading module:', error);
+        });
+}
+
+function initializeModules() {
+    console.log('DOM fully loaded and parsed');
+ document.getElementById('projectionLabel').textContent = "Projection by Demand";
+    const helpToggle = document.getElementById('help-toggle');
+    customInfoContainer = document.getElementById('custom-info-container');
+    customInfoContent = document.getElementById('custom-info-content');
+    const closeButton = document.querySelector('.close-button');
+    const menuButtons = document.querySelectorAll('.menu-button');
+
+    loadConfigurations();
+    
+    const container = document.getElementById('main-content-container');
+    const handle = document.getElementById('resize-handle');
+    if (container && handle) {
+        makeResizable(container, handle);
+        container.style.height = '50vh';
+        adjustLayout();
+    }
+
+    // Unified Bar Initialization
+    ['elec', 'hydro', 'cool'].forEach(type => {
+        const inputId = `${type}Profit`;
+        const input = document.getElementById(inputId);
+        
+        if (input) {
+            input.addEventListener('change', function() {
+                changeValue(inputId, 0, false);
+            });
+
+            updateSellingPrice(inputId);
+        }
+    });
+
+    // Add event listeners for all input controls
+    document.querySelectorAll('.input-control').forEach(control => {
+        const container = control.closest('.input-container');
+        if (container) {
+            const input = container.querySelector('input');
+            if (input) {
+                const inputId = input.id;
+                const change = control.classList.contains('decrease') ? -0.5 : 0.5;
+                
+                control.addEventListener('mousedown', () => startHolding(inputId, change));
+                control.addEventListener('mouseup', stopHolding);
+                control.addEventListener('mouseleave', stopHolding);
+            }
+        }
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const configName = urlParams.get('config');
+    if (configName) {
+        const config = configurations.find(c => c.name === configName);
+        if (config) {
+            applyConfiguration(config);
+        }
+    }
+
+    if (helpToggle) {
+        helpToggle.addEventListener('click', toggleHelp);
+    }
+
+    if (closeButton) {
+        closeButton.addEventListener('click', hideCustomInfo);
+    }
+
+    const mainMenuButton = document.getElementById('main-menu-button');
+    const mainMenuDropdown = document.getElementById('main-menu-dropdown');
+
+    if (mainMenuButton && mainMenuDropdown) {
+        mainMenuButton.addEventListener('click', toggleMainMenu);
+        document.addEventListener('click', closeMainMenuOnClickOutside);
+    }
+
+    // Initialize the table
+    updateTable();
+
+    document.getElementById('timePeriodSelect').addEventListener('change', handleTimePeriodChange);
+    document.getElementById('timeSlider').addEventListener('input', handleTimeSliderChange);
+
+    // Add resize event listener to handle tooltip positioning on window resize
+    window.addEventListener('resize', hideTooltipOnResize);
+
+    // Add scroll event listener to hide tooltip when scrolling
+    document.querySelector('.table-scroll').addEventListener('scroll', hideTooltipOnScroll);
+
+    // Set "by Demand" as the default content
+    showContent('mainContentY');
+}
+
+window.addEventListener('load', initializeModules);
+window.addEventListener('resize', adjustLayout);
+
+function makeResizable(element, handle) {
+    let startY, startHeight;
+    const overlay = createOverlay();
+
+    function onMouseDown(e) {
+        e.preventDefault();
+        startY = e.clientY;
+        startHeight = element.offsetHeight;
+        overlay.style.display = 'block';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        handle.classList.add('active');
+    }
+
+    function onMouseMove(e) {
+        const deltaY = e.clientY - startY;
+        const newHeight = Math.max(50, Math.min(window.innerHeight - 100, startHeight + deltaY));
+        requestAnimationFrame(() => {
+            element.style.height = `${newHeight}px`;
+            adjustLayout();
+        });
+    }
+
+    function onMouseUp() {
+        overlay.style.display = 'none';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        handle.classList.remove('active');
+    }
+
+    handle.addEventListener('mousedown', onMouseDown);
+}
+
+function adjustLayout() {
+    const container = document.getElementById('main-content-container');
+    const menuHeight = document.getElementById('menu-container')?.offsetHeight || 0;
+    const remainingContent = document.querySelector('.remaining-content');
+    
+    if (container && remainingContent) {
+        const containerHeight = container.offsetHeight;
+        const availableHeight = window.innerHeight - menuHeight;
+        remainingContent.style.height = `${availableHeight - containerHeight}px`;
+        
+        document.querySelectorAll('.main-content').forEach(module => {
+            if (module.contentWindow) {
+                module.contentWindow.postMessage({type: 'parentResized', height: containerHeight}, '*');
+            }
+        });
+    }
+}
+
+let activeModule = 'bydemand';
+
+function showContent(contentId, event) {
+    console.log('Showing content:', contentId);
+    const contents = document.getElementsByClassName('main-content');
+    for (let content of contents) {
+        content.style.display = 'none';
+    }
+    let contentToShow;
+    let projectionLabel = "Projection";
+    switch(contentId) {
+        case 'mainContentY':
+            contentToShow = document.getElementById('demandModule');
+            activeModule = 'bydemand';
+            projectionLabel = "Projection by Demand";
+            break;
+        case 'mainContentX':
+            contentToShow = document.getElementById('availabilityModule');
+            activeModule = 'availability';
+            projectionLabel = "Projection by Availability";
+            break;
+        case 'mainContentZ':
+            contentToShow = document.getElementById('aiModule');
+            activeModule = 'ai';
+            projectionLabel = "Projection for AI";
+            break;
+        case 'mainContentA':
+            contentToShow = document.getElementById('opexCapexModule');
+            break;
+        default:
+            contentToShow = document.getElementById(contentId);
+    }
+    if (contentToShow) {
+        contentToShow.style.display = 'block';
+    }
+
+    // Update the projection label
+    document.getElementById('projectionLabel').textContent = projectionLabel;
+
+    const buttons = document.getElementsByClassName('menu-button');
+    for (let button of buttons) {
+        button.classList.remove('active');
+    }
+
+    if (event && event.target) {
+        event.target.classList.add('active');
+    } else {
+        // If there's no event (i.e., called programmatically), set the active class on the appropriate button
+        let buttonToActivate;
+        switch(contentId) {
+            case 'mainContentY':
+                buttonToActivate = '.menu-button[onclick="showContent(\'mainContentY\', event)"]';
+                break;
+            case 'mainContentX':
+                buttonToActivate = '.menu-button[onclick="showContent(\'mainContentX\', event)"]';
+                break;
+            case 'mainContentZ':
+                buttonToActivate = '.menu-button[onclick="showContent(\'mainContentZ\', event)"]';
+                break;
+            case 'mainContentA':
+                buttonToActivate = '.menu-button[onclick="showContent(\'mainContentA\', event)"]';
+                break;
+            case 'mainContentC':
+                buttonToActivate = '.menu-button[onclick="showContent(\'mainContentC\', event)"]';
+                break;
+            case 'mainContentD':
+                buttonToActivate = '.menu-button[onclick="showContent(\'mainContentD\', event)"]';
+                break;
+            default:
+                buttonToActivate = '.menu-button[onclick="showContent(\'mainContentY\', event)"]';
+        }
+        const activeButton = document.querySelector(buttonToActivate);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+    }
+  
+    currentActiveMenu = contentId;
+    if (helpActive) {
+        showCustomInfo(contentId);
+    } else {
+        hideCustomInfo();
+    }
+    
+    currentMode = contentId;
+    updateTimeControls();
+
+    // Trigger an update of the table data
+    updateTable(modeTimeSettings[currentMode].period);
+
+    // If switching to a module, send a message to initialize it
+    if (['mainContentY', 'mainContentX', 'mainContentZ', 'mainContentA'].includes(contentId)) {
+        const moduleElement = document.getElementById(contentId.replace('mainContent', '').toLowerCase() + 'Module');
+        if (moduleElement && moduleElement.contentWindow) {
+            moduleElement.contentWindow.postMessage('initializeModule', '*');
+        }
+    }
+
+    // Update generation costs when changing modules
+    updateGenerationCosts();
+}
+
+function updateTimeControls() {
+    const { years, period } = modeTimeSettings[currentMode];
+    document.getElementById('timeSlider').value = years;
+    document.getElementById('timePeriodSelect').value = period;
+    document.getElementById('yearDisplay').textContent = `${years} Year${years !== 1 ? 's' : ''}`;
+    updateTable(period);
+}
+
+function handleTimeSliderChange() {
+    modeTimeSettings[currentMode].years = parseInt(this.value);
+    document.getElementById('yearDisplay').textContent = `${this.value} Year${this.value !== '1' ? 's' : ''}`;
+    updateTable(modeTimeSettings[currentMode].period);
+}
+
+function handleTimePeriodChange() {
+    modeTimeSettings[currentMode].period = this.value;
+    updateTable(this.value);
+}
+
+function startHolding(inputId, change) {
+    if (holdInterval) clearInterval(holdInterval);
+    holdInterval = setInterval(() => changeValue(inputId, change), 100);
+}
+
+function stopHolding() {
+    clearInterval(holdInterval);
+    holdInterval = null;
+}
+
+function changeValue(inputId, change) {
+    try {
+        const input = document.getElementById(inputId);
+        if (!input) throw new Error(`Input element with id ${inputId} not found`);
+        
+        let value = parseFloat(input.value);
+        value += change;
+        value = Math.max(0, Math.round(value * 10) / 10);
+        
+        input.value = value.toFixed(1);
+        updateSellingPrice(inputId);
+    } catch (error) {
+        console.error('Error in changeValue:', error);
+    }
+}
+
+function updateSellingPrice(inputId) {
+    try {
+        const type = inputId.includes('hydro') ? 'hydro' : (inputId.includes('cool') ? 'cool' : 'elec');
+        const genCostElement = document.getElementById(`${type}GenCost`);
+        const profitElement = document.getElementById(`${type}Profit`);
+        const sellingPriceElement = document.getElementById(`${type}SellingPrice`);
+
+        if (!genCostElement || !profitElement || !sellingPriceElement) {
+            throw new Error(`Required elements not found for ${type}`);
+        }
+
+        const genCost = parseFloat(genCostElement.textContent.split(' ')[0]);
+        const profit = parseFloat(profitElement.value);
+        const sellingPrice = genCost * (1 + profit / 100);
+        const unit = type === 'hydro' ? '[$/kg]' : '[$/kWh]';
+        sellingPriceElement.textContent = `${sellingPrice.toFixed(3)} ${unit}`;
+    } catch (error) {
+        console.error('Error in updateSellingPrice:', error);
+    }
+}
+
+function handleMainMenuAction(action) {
+    switch(action) {
+        case 'history':
+            showHistoryModal();
+            break;
+        case 'save':
+            showSaveModal();
+            break;
+        case 'new':
+            if (confirm("Are you sure you want to start a new configuration? Unsaved changes will be lost.")) {
+                window.open(window.location.href, '_blank');
+            }
+            break;
+        case 'exit':
+            showExitModal();
+            break;
+    }
+    const mainMenuDropdown = document.getElementById('main-menu-dropdown');
+    if (mainMenuDropdown) {
+        mainMenuDropdown.classList.remove('active');
+    }
+}
+
+function showExitModal() {
+    const exitModal = document.getElementById('exit-modal');
+    const exitModalMessage = document.getElementById('exit-modal-message');
+    if (exitModal && exitModalMessage) {
+        exitModalMessage.textContent = isConfigurationSaved ? "Would you like to save changes?" : "Would you like to save this Configuration?";
+        exitModal.style.display = 'block';
+    }
+}
+
+function showSaveModal() {
+    const saveModal = document.getElementById('save-modal');
+    if (saveModal) {
+        saveModal.style.display = 'block';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function loadConfiguration(configName) {
+    const config = configurations.find(c => c.name === configName);
+    if (config) {
+        applyConfiguration(config);
+        
+        const url = new URL(window.location);
+        url.searchParams.set('config', configName);
+        window.open(url.toString(), '_blank');
+
+        isConfigurationSaved = true;
+        closeModal('history-modal');
+    }
+}
+
+function applyConfiguration(config) {
+    // Implement configuration application logic here
+    isConfigurationSaved = true;
+}
+
+function saveConfiguration(callback) {
+    if (isConfigurationSaved) {
+        finalizeConfigurationSave(currentConfigName, callback);
+    } else {
+        const configNameInput = document.getElementById('config-name');
+        let configName = configNameInput ? configNameInput.value.trim() : '';
+        if (!configName) {
+            configName = currentConfigName || new Date().toLocaleString();
+        }
+
+        if (configurations.some(config => config.name === configName)) {
+            showNameConflictModal(configName, callback);
+            return;
+        }
+
+        finalizeConfigurationSave(configName, callback);
+    }
+}
+
+function finalizeConfigurationSave(configName, callback) {
+    const config = { name: configName };
+
+    const existingConfigIndex = configurations.findIndex(c => c.name === configName);
+    if (existingConfigIndex >= 0) {
+        configurations[existingConfigIndex] = config;
+    } else {
+        configurations.push(config);
+    }
+
+    saveConfigurations();
+    currentConfigName = configName;
+    isConfigurationSaved = true;
+    if (callback) callback();
+    closeModal('save-modal');
+}
+
+function saveConfigurations() {
+    localStorage.setItem('configurations', JSON.stringify(configurations));
+}
+
+function loadConfigurations() {
+    const savedConfigurations = localStorage.getItem('configurations');
+    if (savedConfigurations) {
+        configurations = JSON.parse(savedConfigurations);
+    }
+}
+
+function showHistoryModal() {
+    const historyModal = document.getElementById('history-modal');
+    const historyList = document.getElementById('history-list');
+    if (historyModal && historyList) {
+        historyList.innerHTML = '';
+        configurations.forEach(config => {
+            const listItem = document.createElement('li');
+            listItem.textContent = config.name;
+            listItem.onclick = () => loadConfiguration(config.name);
+            historyList.appendChild(listItem);
+        });
+        historyModal.style.display = 'block';
+    }
+}
+
+function showNameConflictModal(conflictingName, callback) {
+    const nameConflictModal = document.getElementById('name-conflict-modal');
+    const newNameInput = document.getElementById('new-config-name');
+    if (nameConflictModal && newNameInput) {
+        newNameInput.value = conflictingName;
+        newNameInput.dataset.callback = callback;
+        nameConflictModal.style.display = 'block';
+    }
+}
+
+function resolveNameConflict() {
+    const newNameInput = document.getElementById('new-config-name');
+    if (newNameInput) {
+        const newConfigName = newNameInput.value.trim();
+        const callback = newNameInput.dataset.callback;
+        if (newConfigName && !configurations.some(config => config.name === newConfigName)) {
+            finalizeConfigurationSave(newConfigName, callback);
+            closeNameConflictModal();
+        } else {
+            alert('Please choose a unique name.');
+        }
+    }
+}
+
+function closeNameConflictModal() {
+    closeModal('name-conflict-modal');
+}
+
+function exitWithoutSaving() {
+    closeModal('exit-modal');
+    // Add any additional logic for exiting without saving
+    window.close(); // This may not work in all browsers due to security restrictions
+}
+
+function exitWithSaving() {
+    saveConfiguration(() => {
+        closeModal('exit-modal');
+        // Add any additional logic for exiting after saving
+        window.close(); // This may not work in all browsers due to security restrictions
+    });
+}
+
+function showCustomInfo(contentId) {
+    if (customInfoContent && customInfoContainer) {
+        const customInfo = getCustomInfo(contentId);
+        customInfoContent.innerHTML = customInfo;
+        customInfoContainer.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when help is active
+    }
+}
+
+function hideCustomInfo() {
+    if (customInfoContainer) {
+        customInfoContainer.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
+function getCustomInfo(contentId) {
+    const infoContent = {
+        mainContentX: "Information about Hardware Configuration: This section allows you to set up and configure your hardware specifications. You can adjust parameters related to your energy generation and storage equipment.",
+        mainContentY: "Information about Demand-based Configuration: Here you can configure your system based on demand patterns. This helps in optimizing energy production and distribution according to usage trends.",
+        mainContentZ: "Information about AI Configuration: This section provides AI-driven insights and configurations for optimizing your energy system.",
+        mainContentA: "Information about OPEX & CAPEX: Here you can view and manage your operational expenditures (OPEX) and capital expenditures (CAPEX). This helps in financial planning and cost optimization for your energy system.",
+        mainContentC: "Information about Metrics: This section displays key performance indicators and metrics for your energy system. You can monitor efficiency, output, and other crucial parameters.",
+        mainContentD: "Information about LCOS: The Levelized Cost of Storage (LCOS) section helps you analyze the long-term costs of your energy storage system, factoring in various economic and operational parameters."
+    };
+    return `<h2>Help: ${contentId.replace('mainContent', '')}</h2><p>${infoContent[contentId] || 'No specific information available for this section.'}</p>`;
+}
+
+function toggleHelp() {
+    helpActive = !helpActive;
+    const helpToggle = document.getElementById('help-toggle');
+    helpToggle.classList.toggle('red', !helpActive);
+    helpToggle.classList.toggle('blue', helpActive);
+    helpToggle.classList.toggle('active', helpActive);
+    if (helpActive) {
+        showCustomInfo(currentActiveMenu);
+    } else {
+        hideCustomInfo();
+    }
+}
+
+function toggleMainMenu(event) {
+    event.stopPropagation();
+    const mainMenuDropdown = document.getElementById('main-menu-dropdown');
+    mainMenuDropdown.classList.toggle('active');
+}
+
+function closeMainMenuOnClickOutside(event) {
+    const mainMenuDropdown = document.getElementById('main-menu-dropdown');
+    const mainMenuButton = document.getElementById('main-menu-button');
+    if (!mainMenuDropdown.contains(event.target) && event.target !== mainMenuButton) {
+        mainMenuDropdown.classList.remove('active');
+    }
+}
+
+function hideTooltipOnResize() {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.visibility = 'hidden';
+    tooltip.style.opacity = '0';
+}
+
+function hideTooltipOnScroll() {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.visibility = 'hidden';
+    tooltip.style.opacity = '0';
+}
+
+console.log('SharedState:', sharedState);
+console.log('Active Module:', activeModule);
+
+// Table-related functions
+var sharedState = {};
+const HYDROGEN_LHV = 33.33; // kWh/kg
+const GAS_LHV = 10.41; // kWh/m3
+const AMMONIA_LHV = 5.1; // kWh/kg
+const Methanol_LHV = 5.35; // kWh/kg
+
+const WATER_MOLAR_MASS = 36.032; // g/mol for 2 moles
+const HYDROGEN_MOLAR_MASS = 4.032; // g/mol for 2 moles
+const LITERS_TO_CUBIC_METERS = 0.001; // Conversion factor from liters to cubic meters
+const WATER_PRICE = 1 // price of 1 m3 distill water [$/m3]
+
+function createTooltip(data, key, isFirstRow, firstRowCapex, period) {
+    const units = {
+        elecConsumption: 'GWh',
+        tpfsConsumption: '$M',
+        waterConsumption: 'Mm³',
+        elecGeneration: 'GWh',
+        h2Generation: 'kt',
+        coolGeneration: 'GWh',
+        opex: '$M',
+        capex: '$M',
+        profit: '$M',
+        state: '$M'
+    };
+
+    const fullNames = {
+        elecConsumption: 'Electricity Consumption',
+        tpfsConsumption: 'TPFs Consumption',
+        waterConsumption: 'Water Consumption',
+        elecGeneration: 'Electricity Generation',
+        h2Generation: 'Hydrogen Generation',
+        coolGeneration: 'Cooling Generation',
+        opex: 'Operational Expenditure',
+        capex: 'Capital Expenditure',
+        profit: 'Revenue',
+        state: 'Balance'
+    };
+
+    function roundToTwoDecimals(value) {
+        return Number(value.toFixed(2));
+    }
+
+    if (key === 'tpfsConsumption') {
+        const naturalGas = roundToTwoDecimals(data.naturalGas || 0);
+        const ammonia = roundToTwoDecimals(data.ammonia || 0);
+        const methanol = roundToTwoDecimals(data.methanol || 0);
+        return `${fullNames[key]}: ${adaptUnits(roundToTwoDecimals(data[key] || 0), '$')}
+Natural Gas: ${formatNumber(naturalGas)} m³
+Ammonia: ${formatNumber(ammonia)} kg
+Methanol: ${formatNumber(methanol)} kg`;
+    } else if (key === 'waterConsumption') {
+        return `${fullNames[key]}: ${adaptUnits(roundToTwoDecimals(data[key] || 0), 'm³')}`;
+    } else if (key === 'elecGeneration') {
+        return `${fullNames[key]}: ${adaptUnits(roundToTwoDecimals(data[key] || 0), 'kWh')}`;
+    } else if (key === 'h2Generation') {
+        return `${fullNames[key]}: ${adaptUnits(roundToTwoDecimals(data[key] || 0), 'kg')}`;
+    } else if (key === 'coolGeneration') {
+        return `${fullNames[key]}: ${adaptUnits(roundToTwoDecimals(data[key] || 0), 'kWh')}`;
+    } else if (key === 'state') {
+        const dailyProfit = roundToTwoDecimals((data.profit || 0) / period);
+        const dailyOpex = roundToTwoDecimals((data.opex || 0) / period);
+        const dailyChange = roundToTwoDecimals(dailyProfit - dailyOpex);
+        return `${fullNames[key]}: ${adaptUnits(roundToTwoDecimals(data[key] || 0), '$')}
+Daily Change: ${adaptUnits(dailyChange, '$')}
+Calculation: Cumulative Revenue (${adaptUnits(roundToTwoDecimals(data.profit || 0), '$')}) - Cumulative OPEX (${adaptUnits(roundToTwoDecimals(data.opex || 0), '$')}) - CAPEX (${adaptUnits(roundToTwoDecimals(firstRowCapex || 0), '$')})`;
+    } else {
+        return `${fullNames[key]}: ${adaptUnits(roundToTwoDecimals(data[key] || 0), units[key])}`;
+    }
+}
+
+function initializeSharedState() {
+    Object.assign(sharedState, {
+        demand: 100000,
+        regenerativeEnergyValue: 50000,
+        thirdPartyEnergyValue: 50000,
+        efficiencyHValue: 94,
+        efficiencyECValue: 85,
+        hydrogen: 1000,
+        utilizationGas: 100,
+        utilizationAmmonia: 0,
+        utilizationMethanol: 0,
+        priceGas: 100,
+        priceAmmonia: 0.440,
+        priceMethanol: 0.380,
+        availableEnergy: 100000,
+        dssPercentage: 30,
+        elecGeneration: 50000,
+        coolGeneration: 50000,
+        electricityCost: 0.01,
+        serviceCost: 10,
+        otherCosts: 5,
+        installedUnitsHValue: 20,
+        installedUnitsECValue: 1000,
+        capexFuelgenCost: 100000,
+        capexCslgCost: 50000,
+        capexCslgAcCost: 60000,
+        capexInitialInvestment: 1,
+        demandElectricity: 50,
+        capexOtherHardware: 10,
+        elecSellingPrice: 0.15,
+        hydroSellingPrice: 5,
+        coolSellingPrice: 0.1,
+        elecGenCost: 0.08,
+        hydroGenCost: 3,
+        coolGenCost: 0.05,
+        electricityPercentage: 50,
+        coolingPercentage: 50,
+    });
+}
+
+function calculateWaterConsumption(elecConsumption, hydrogen) {
+    return Math.round((elecConsumption / HYDROGEN_LHV) * (WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS);
+}
+
+function createTableRow(period, data, isFirstRow = false, firstRowCapex) {
+    const row = document.createElement('tr');
+    if (isFirstRow) {
+        row.classList.add('sticky-row');
+    }
+    
+    row.innerHTML = `
+        <td class="period-column">${period}</td>
+        <td id="${isFirstRow ? 'cell_elecConsumption' : ''}" class="consumption-column data-column info-cell" data-tooltip="${createTooltip(data, 'elecConsumption', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.elecConsumption || 0, 'kWh')}</td>
+        <td id="${isFirstRow ? 'cell_tpfsConsumption' : ''}" class="consumption-column data-column info-cell" data-tooltip="${createTooltip(data, 'tpfsConsumption', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.tpfsConsumption || 0, '$')}</td>
+        <td id="${isFirstRow ? 'cell_waterConsumption' : ''}" class="consumption-column data-column info-cell" data-tooltip="${createTooltip(data, 'waterConsumption', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.waterConsumption || 0, 'm³')}</td>
+        <td id="${isFirstRow ? 'cell_elecGeneration' : ''}" class="generation-column data-column info-cell section-divider" data-tooltip="${createTooltip(data, 'elecGeneration', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.elecGeneration || 0, 'kWh')}</td>
+        <td id="${isFirstRow ? 'cell_h2Generation' : ''}" class="generation-column data-column info-cell" data-tooltip="${createTooltip(data, 'h2Generation', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.h2Generation || 0, 'kg')}</td>
+        <td id="${isFirstRow ? 'cell_coolGeneration' : ''}" class="generation-column data-column info-cell" data-tooltip="${createTooltip(data, 'coolGeneration', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.coolGeneration || 0, 'kWh')}</td>
+        <td id="${isFirstRow ? 'cell_opex' : ''}" class="performance-column data-column info-cell section-divider" data-tooltip="${createTooltip(data, 'opex', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.opex || 0, '$')}</td>
+        <td id="${isFirstRow ? 'cell_capex' : ''}" class="performance-column data-column info-cell" data-tooltip="${createTooltip(data, 'capex', isFirstRow, firstRowCapex, period)}">${isFirstRow ? adaptUnits(data.capex || 0, '$') : '-'}</td>
+        <td id="${isFirstRow ? 'cell_profit' : ''}" class="performance-column data-column info-cell" data-tooltip="${createTooltip(data, 'profit', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.profit || 0, '$')}</td>
+        <td id="${isFirstRow ? 'cell_state' : ''}" class="state-column info-cell section-divider ${getStateColor(data.state || 0)}" data-tooltip="${createTooltip(data, 'state', isFirstRow, firstRowCapex, period)}">${adaptUnits(data.state || 0, '$')}</td>
+    `;
+
+    return row;
+}
+
+async function fetchData() {
+    // Simulating an asynchronous data fetch
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { 
+        totalDays: 1000, 
+        firstRowData: {
+            elecConsumption: 1500000,
+        } 
+    };
+}
+
+async function updateTable(period = 'day') {
+    try {
+        const years = modeTimeSettings[currentMode].years;
+        const totalDays = years * 365;
+
+        console.log('Updating table with period:', period);
+        showLoadingIndicator();
+        const data = await fetchData();
+        console.log('Fetched data:', data);
+        console.log('SharedState:', sharedState);
+        console.log('Active Module:', activeModule);
+
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = '';
+
+        let periodLength, numPeriods;
+        switch(period) {
+            case 'week':
+                periodLength = 7;
+                numPeriods = Math.ceil(totalDays / 7);
+                break;
+            case 'month':
+                periodLength = 30;
+                numPeriods = Math.ceil(totalDays / 30);
+                break;
+            case 'year':
+                periodLength = 365;
+                numPeriods = Math.ceil(totalDays / 365);
+                break;
+            default:
+                periodLength = 1;
+                numPeriods = totalDays;
+        }
+
+        let {
+            demand = 0,
+            regenerativeEnergyValue = 0,
+            thirdPartyEnergyValue = 0,
+            efficiencyHValue = 100,
+            efficiencyECValue = 100,
+            hydrogen = 0,
+            utilizationGas = 0,
+            utilizationAmmonia = 0,
+            utilizationMethanol = 0,
+            priceGas = 0,
+            priceAmmonia = 0,
+            priceMethanol = 0,
+            availableEnergy = 0,
+            dssPercentage = 0,
+            elecGeneration = 0,
+            coolGeneration = 0,
+            electricityCost = 0,
+            availElecGeneration = 0,
+            availCoolGeneration = 0,
+            availHydrogen = 0,
+            electricityPercentage = 0,
+            coolingPercentage = 0,
+            availElectricityPercentage = 0,
+            availCoolingPercentage = 0,
+            serviceCost = 0,
+            otherCosts = 0,
+            availElectricityCost = 0
+        } = sharedState;
+
+        const installedUnitsHValue = sharedState.installedUnitsHValue || 0;
+        const installedUnitsECValue = sharedState.installedUnitsECValue || 0;
+        const capexFuelgenCost = sharedState.capexFuelgenCost || 0;
+        const capexCslgCost = sharedState.capexCslgCost || 0;
+        const capexCslgAcCost = sharedState.capexCslgAcCost || 0;
+        const capexInitialInvestment = sharedState.capexInitialInvestment || 0;
+        const demandElectricity = sharedState.demandElectricity || 0;
+        const demandCooling = sharedState.demandCooling || 0;
+        const capexOtherHardware = sharedState.capexOtherHardware || 0;
+
+        console.log('demandcapex:', coolingPercentage);
+        
+        elecGeneration = Math.round(demandElectricity);
+        coolGeneration = Math.round(demandCooling);
+        console.log('elecGeneration, coolGeneration:', { elecGeneration, coolGeneration });
+        
+        let elecConsumption = 0;
+        let tpfsConsumption = 0;
+        let waterConsumption = 0;
+        let opex = 0;
+        let NaturalGas = 0;
+        let Ammonia = 0;
+        let Methanol = 0;
+
+        if (activeModule === 'bydemand') {
+            if (efficiencyHValue !== 0 && efficiencyECValue !== 0) {
+                elecConsumption = Math.round((regenerativeEnergyValue) / (efficiencyHValue * efficiencyECValue / 10000) + hydrogen * HYDROGEN_LHV / (efficiencyHValue / 100));
+            }
+
+            NaturalGas = Math.round((thirdPartyEnergyValue * (utilizationGas / 100)) / GAS_LHV / (efficiencyECValue / 100));
+            Ammonia = Math.round((thirdPartyEnergyValue * (utilizationAmmonia / 100)) / AMMONIA_LHV / (efficiencyECValue / 100));
+            Methanol = Math.round((thirdPartyEnergyValue * (utilizationMethanol / 100)) / Methanol_LHV / (efficiencyECValue / 100));
+            tpfsConsumption = Math.round(((NaturalGas / 1000) * priceGas) + (Ammonia * priceAmmonia) + (Methanol * priceMethanol));
+
+            waterConsumption = calculateWaterConsumption(elecConsumption, hydrogen);
+
+            opex = Math.round((elecConsumption * electricityCost + tpfsConsumption + waterConsumption * WATER_PRICE) * (1 + (serviceCost / 100)) * (1 + (otherCosts / 100)) * 100) / 100;
+        } else if (activeModule === 'availability') {
+            elecConsumption = Math.round(availableEnergy * (1 - dssPercentage / 100));
+            elecGeneration = Math.round(availElecGeneration);
+            coolGeneration = Math.round(availCoolGeneration);
+            hydrogen = availHydrogen;
+
+            waterConsumption = Math.round((availableEnergy * (1 - (dssPercentage / 100)) / HYDROGEN_LHV) * (WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS);
+
+            opex = Math.round((availableEnergy * availElectricityCost + tpfsConsumption + waterConsumption * WATER_PRICE) * (1 + (serviceCost / 100)) * (1 + (otherCosts / 100)) * 100) / 100;
+        }
+
+        console.log('demand_opex:', {elecConsumption, electricityCost, tpfsConsumption, waterConsumption, opex});
+
+        let capex;
+        
+        if (activeModule === 'bydemand') {
+            capex = capexInitialInvestment + ((installedUnitsECValue * (coolingPercentage / 100) * capexCslgAcCost) + 
+                    (installedUnitsECValue * (electricityPercentage / 100) * capexCslgCost) + 
+                    installedUnitsHValue * capexFuelgenCost) * 
+                    (1 + (capexOtherHardware / 100));
+            console.log('demandcapex:', {capex, capexInitialInvestment, installedUnitsECValue, coolingPercentage, capexCslgAcCost, capexFuelgenCost});
+        } else if (activeModule === 'availability') {
+            const availInstalledUnitsHValue = sharedState.availInstalledUnitsHValue || 0;
+            const availInstalledUnitsECValue = sharedState.availInstalledUnitsECValue || 0;
+            
+            capex = capexInitialInvestment + 
+                    (((availInstalledUnitsECValue * (availCoolingPercentage / 100) * capexCslgAcCost) + 
+                    (availInstalledUnitsECValue * (availElectricityPercentage / 100) * capexCslgCost) + 
+                    availInstalledUnitsHValue * capexFuelgenCost)) * 
+                    (1 + (capexOtherHardware / 100));
+           
+            console.log('availcapex:', {capex, capexInitialInvestment, availInstalledUnitsECValue, availCoolingPercentage, capexCslgAcCost, capexOtherHardware, availElectricityPercentage, capexCslgCost, capexFuelgenCost, availInstalledUnitsHValue});
+        }
+
+        const elecSellingPrice = sharedState.elecSellingPrice || 0;
+        const hydroSellingPrice = sharedState.hydroSellingPrice || 0;
+        const coolSellingPrice = sharedState.coolSellingPrice || 0;
+        const elecGenCost = sharedState.elecGenCost || 0;
+        const hydroGenCost = sharedState.hydroGenCost || 0;
+        const coolGenCost = sharedState.coolGenCost || 0;
+
+        const profit = (Math.round(
+            ((elecGeneration * (elecSellingPrice - elecGenCost)) +
+            (hydrogen * (hydroSellingPrice - hydroGenCost)) +
+            (coolGeneration * (coolSellingPrice - coolGenCost))) * 100
+        ) / 100) + opex;
+
+        let dailyData = {
+            elecConsumption,
+            tpfsConsumption,
+            naturalGas: NaturalGas,
+            ammonia: Ammonia,
+            methanol: Methanol,
+            waterConsumption,
+            elecGeneration,
+            h2Generation: hydrogen,
+            coolGeneration,
+            opex,
+            capex,
+            profit,
+            state: 0
+        };
+
+        let previousState = 0;
+        let firstRowCapex = 0;
+
+        for (let j = 1; j <= numPeriods; j++) {
+            let currentDay = j * periodLength;
+            if (currentDay > totalDays) currentDay = totalDays;
+
+            let cumulativeData = {};
+            Object.keys(dailyData).forEach(key => {
+                if (key === 'capex') {
+                    cumulativeData[key] = j === 1 ? dailyData[key] : 0;
+                    if (j === 1) {
+                        firstRowCapex = dailyData[key];
+                    }
+                } else if (key === 'state') {
+                    cumulativeData[key] = Math.round((dailyData.profit * currentDay - dailyData.opex * currentDay - capex) * 100) / 100;
+                    console.log('currentDay', currentDay);
+                } else {
+                    cumulativeData[key] = Math.round(dailyData[key] * currentDay * 100) / 100;
+                }
+            });
+
+            previousState = cumulativeData.state;
+
+            tableBody.appendChild(createTableRow(j, cumulativeData, j === 1, firstRowCapex));
+        }
+
+        // Update shared state with the latest calculated values
+        Object.assign(sharedState, dailyData);
+
+        // Call updateGenerationCosts after updating shared state
+        updateGenerationCosts();
+
+        setupTooltips();
+        hideLoadingIndicator();
+        return data;
+    } catch (error) {
+        console.error('Error updating table:', error);
+        console.error('Error stack:', error.stack);
+        hideLoadingIndicator();
+    }
+}
+
+function updateGenerationCosts() {
+    if (activeModule === 'bydemand') {
+        // Get all required values from sharedState
+        const demand = sharedState.demand || 0;
+        const regenerativeEnergyValue = sharedState.regenerativeEnergyValue || 0;
+        const efficiencyHValue = sharedState.efficiencyHValue || 100;
+        const efficiencyECValue = sharedState.efficiencyECValue || 100;
+        const electricityCost = sharedState.electricityCost || 0;
+        const tpfsConsumption = sharedState.tpfsConsumption || 0;
+        const hydrogen = sharedState.hydrogen || 0;
+        const elecGeneration = sharedState.elecGeneration || 0;
+        const coolGeneration = sharedState.coolGeneration || 0;
+        const electricityPercentage = sharedState.electricityPercentage || 50;
+        const coolingPercentage = sharedState.coolingPercentage || 50;
+        const waterConsumption = sharedState.waterConsumption || 0;
+        const thirdPartyEnergyValue = sharedState.thirdPartyEnergyValue || 0;
+        const serviceCost = sharedState.serviceCost || 0;
+        const otherCosts = sharedState.otherCosts || 0;
+        
+        console.log('Generation Cost Calculation Values:', {
+            demand, regenerativeEnergyValue, efficiencyHValue, efficiencyECValue,
+            electricityCost, tpfsConsumption, hydrogen, elecGeneration, coolGeneration,
+            electricityPercentage, coolingPercentage
+        });
+
+        // Calculate Generation Costs
+        const REGEN_ENERGY_REQUIRED = (regenerativeEnergyValue) / (efficiencyHValue * efficiencyECValue / 10000);
+     
+        let elecGenCost = 0;
+        if (elecGeneration > 1) {
+            elecGenCost = (((REGEN_ENERGY_REQUIRED * electricityCost + tpfsConsumption + (REGEN_ENERGY_REQUIRED / HYDROGEN_LHV) * (WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS * WATER_PRICE) * (electricityPercentage / 100)) / elecGeneration)*(1 + (serviceCost / 100)) * (1 + (otherCosts / 100));
+        }
+        
+        let hydroGenCost = 0;
+        if (hydrogen > 1) { 
+            hydroGenCost = ((((hydrogen * HYDROGEN_LHV) / (efficiencyHValue / 100)) * electricityCost + 
+            (((hydrogen) / (efficiencyHValue / 100)) * (WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS * WATER_PRICE))/ hydrogen)*(1 + (serviceCost / 100)) * (1 + (otherCosts / 100)) ;
+        }
+
+        let coolGenCost = 0;
+        if (coolGeneration > 1) {
+            coolGenCost = (((REGEN_ENERGY_REQUIRED * electricityCost + tpfsConsumption + (REGEN_ENERGY_REQUIRED / HYDROGEN_LHV) * (WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS * WATER_PRICE) * (coolingPercentage / 100))/ coolGeneration)*(1 + (serviceCost / 100)) * (1 + (otherCosts / 100));
+        }
+
+        // Update the display boxes
+        document.getElementById('elecGenCost').textContent = `${elecGenCost.toFixed(5)} [$/kWh]`;
+        document.getElementById('hydroGenCost').textContent = `${hydroGenCost.toFixed(2)} [$/kg]`;
+        document.getElementById('coolGenCost').textContent = `${coolGenCost.toFixed(5)} [$/kWh]`;
+
+        // Update shared state with new generation costs
+        Object.assign(sharedState, { elecGenCost, hydroGenCost, coolGenCost });
+
+        // Update selling prices after updating generation costs
+        initializeSellingPrices();
+
+        console.log('Calculated Generation Costs:', { elecGenCost, hydroGenCost, coolGenCost });
+
+        return { elecGenCost, hydroGenCost, coolGenCost };
+    } else if (activeModule === 'availability') {
+        const availableEnergy = sharedState.availableEnergy || 0;
+        const dssPercentage = sharedState.dssPercentage || 0;
+        const elecGeneration = sharedState.availElecGeneration || 0;
+        const coolGeneration = sharedState.availCoolGeneration || 0;
+
+        const elecConsumption = sharedState.elecConsumption || 0;
+        const availElectricityPercentage = sharedState.availElectricityPercentage || 0;
+        const availCoolingPercentage = sharedState.availCoolingPercentage || 0;
+        const availInstalledUnitsHValue = sharedState.availInstalledUnitsHValue || 0;
+        const availInstalledUnitsECValue = sharedState.availInstalledUnitsECValue || 0;
+        const hydrogen = sharedState.availHydrogen || 0;
+        const serviceCost = sharedState.serviceCost || 0;
+        const otherCosts = sharedState.otherCosts || 0;
+        const availElectricityCost = sharedState.availElectricityCost || 0;
+        const availEfficiencyHValue = sharedState.availEfficiencyHValue || 0;
+        const availEfficiencyECValue = sharedState.availEfficiencyECValue || 0;
+        const waterConsumption = sharedState.waterConsumption || 0;
+
+
+        let elecGenCost = 0;
+        if (elecGeneration > 1) {
+            elecGenCost = (
+               
+ ( (((availableEnergy -(hydrogen * HYDROGEN_LHV) / (availEfficiencyHValue / 100))*availElectricityCost)+(waterConsumption-
+ (hydrogen*(WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS))* WATER_PRICE )/elecGeneration)*(1 + (serviceCost / 100)) * (1 + (otherCosts / 100)) //[$/kWh]
+            );
+        }
+        console.log('elecConsumption:', {
+            availElectricityCost,
+            availElectricityPercentage,
+            elecConsumption
+        });
+
+        let hydroGenCost = 0;
+        if (hydrogen > 1) {
+            hydroGenCost = (
+  
+   
+   (((((hydrogen * HYDROGEN_LHV) / (availEfficiencyHValue / 100)) * availElectricityCost + (hydrogen*(WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS * WATER_PRICE )* WATER_PRICE)) / hydrogen)*(1 + (serviceCost / 100)) * (1 + (otherCosts / 100)) //[$/kg]
+   
+            );
+        }
+
+        let coolGenCost = 0;
+        if (coolGeneration > 1) {
+            coolGenCost = (
+(  ( ((availableEnergy -(hydrogen * HYDROGEN_LHV) / (availEfficiencyHValue / 100))*availElectricityCost) +  
+((waterConsumption-(hydrogen*(WATER_MOLAR_MASS / HYDROGEN_MOLAR_MASS) * LITERS_TO_CUBIC_METERS))* WATER_PRICE) ) /coolGeneration)*(1 + (serviceCost / 100)) * (1 + (otherCosts / 100)) //[$/kWh]
+            );
+        }
+
+        console.log('Calculated avail Generation Costs:', { elecGenCost, hydroGenCost, coolGenCost });
+
+        // Update the display boxes
+        document.getElementById('elecGenCost').textContent = `${elecGenCost.toFixed(5)} [$/kWh]`;
+        document.getElementById('hydroGenCost').textContent = `${hydroGenCost.toFixed(2)} [$/kg]`;
+        document.getElementById('coolGenCost').textContent = `${coolGenCost.toFixed(5)} [$/kWh]`;
+
+        // Update shared state with new generation costs
+        Object.assign(sharedState, { elecGenCost, hydroGenCost, coolGenCost });
+        
+        // Update selling prices after updating generation costs
+        initializeSellingPrices();
+
+        return { elecGenCost, hydroGenCost, coolGenCost };
+    }
+}
+
+
+function initializeSellingPrices() {
+    ['elec', 'hydro', 'cool'].forEach(type => {
+        const profitPercentage = parseFloat(document.getElementById(`${type}Profit`).value) / 100;
+        const genCost = sharedState[`${type}GenCost`];
+        const sellingPrice = genCost * (1 + profitPercentage);
+
+        // Update the display
+        document.getElementById(`${type}SellingPrice`).textContent = `${sellingPrice.toFixed(3)} [${type === 'hydro' ? '$/kg' : '$/kWh'}]`;
+
+        // Update shared state
+        sharedState[`${type}SellingPrice`] = sellingPrice;
+    });
+
+    console.log('Updated Selling Prices:', {
+        elecSellingPrice: sharedState.elecSellingPrice,
+        hydroSellingPrice: sharedState.hydroSellingPrice,
+        coolSellingPrice: sharedState.coolSellingPrice
+    });
+}
+
+// Add event listeners to profit inputs
+['elec', 'hydro', 'cool'].forEach(type => {
+    document.getElementById(`${type}Profit`).addEventListener('change', initializeSellingPrices);
+});
+
+// Helper function to calculate daily state change
+/*function calculateDailyStateChange(profit, capex, opex) {
+    return profit - capex - opex;
+}*/
+
+// Helper function to format numbers
+function formatNumber(value) {
+    if (value === undefined || value === null) {
+        return '0';
+    }
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+// Helper function to adapt units
+function adaptUnits(value, unit) {
+    if (value === undefined || value === null) {
+        value = 0;
+    }
+
+    function formatWithThousandsSeparator(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    if (unit === '$') {
+        const millions = value / 1000000;
+        return (millions < 0 ? '-$' : '$') + Math.abs(millions).toFixed(2) + 'M';
+    } else if (unit === 'kWh') {
+        if (value >= 1000000) {
+            return formatWithThousandsSeparator((value / 1000000).toFixed(3)) + ' GWh';
+        } else if (value >= 1000) {
+            return formatWithThousandsSeparator((value / 1000).toFixed(3)) + ' MWh';
+        } else {
+            return formatWithThousandsSeparator(value.toFixed(3)) + ' kWh';
+        }
+    } else if (unit === 'kg') {
+        if (value >= 1000) {
+            return formatWithThousandsSeparator((value / 1000).toFixed(3)) + ' t';
+        } else {
+            return formatWithThousandsSeparator(value.toFixed(3)) + ' kg';
+        }
+    } else if (unit === 'm³') {
+        if (value >= 1000000) {
+            return formatWithThousandsSeparator((value / 1000000).toFixed(3)) + ' Mm³';
+        } else if (value >= 1000) {
+            return formatWithThousandsSeparator((value / 1000).toFixed(3)) + ' km³';
+        } else {
+            return formatWithThousandsSeparator(value.toFixed(3)) + ' m³';
+        }
+    }
+    return formatWithThousandsSeparator(value.toFixed(3));
+}
+
+// Helper function to get state color
+function getStateColor(value) {
+    if (value < 0) {
+        return 'negative';
+    } else if (value > 0) {
+        return 'positive';
+    }
+    return 'zero';
+}
+
+function setupTooltips() {
+    const tooltip = document.getElementById('tooltip');
+    const infoCells = document.querySelectorAll('.info-cell');
+
+    infoCells.forEach(cell => {
+        cell.addEventListener('mouseenter', (event) => {
+            const tooltipText = event.target.getAttribute('data-tooltip');
+            tooltip.textContent = tooltipText;
+            tooltip.style.visibility = 'visible';
+            tooltip.style.opacity = '1';
+        });
+
+        cell.addEventListener('mousemove', (event) => {
+            tooltip.style.top = `${event.pageY + 10}px`;
+            tooltip.style.left = `${event.pageX + 10}px`;
+        });
+
+        cell.addEventListener('mouseleave', () => {
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.opacity = '0';
+        });
+    });
+}
+
+function showLoadingIndicator() {
+    document.getElementById('loadingIndicator').style.display = 'block';
+}
+
+function hideLoadingIndicator() {
+    document.getElementById('loadingIndicator').style.display = 'none';
+}
+
+// Simulating an asynchronous data fetch (replace with actual data fetching in production)
+async function fetchData() {
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulating network delay
+    // In a real application, you would fetch data from an API here
+    // and return the fetched data
+    return { 
+        totalDays: 1000, 
+        firstRowData: {
+            elecConsumption: 1500000,
+          /*  tpfsConsumption: 2000000,
+            naturalGas: 5000,
+            ammonia: 2000,
+            methanol: 3000,
+            waterConsumption: 100000,
+            elecGeneration: 3000000,
+            h2Generation: 50000,
+            coolGeneration: 500000,
+            opex: 500000,
+            capex: 10000000,
+            profit: 1500000,
+            state: 0*/
+        } 
+    };
+}
+
+function calculateDailyStateChange(profit, capex, opex) {
+    // Use high precision for calculation
+    const result = (profit ) - (capex ) - opex;
+    // Round to 2 decimal places
+    return Math.round(result * 100) / 100;
+}
+
+
+function formatNumber(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+function adaptUnits(value, unit) {
+    if (unit === '$' || unit === 'kWh') {
+        if (value >= 100000000) {
+            const millions = value / 1000000;
+            const formattedValue = millions.toFixed(3).replace(/\.?0+$/, '');
+            return unit === '$' ? '$' + formattedValue + 'M' : formattedValue + ' MWh';
+        }
+        return unit === '$' ? '$' + formatNumber(value) : formatNumber(value) + ' ' + unit;
+    } else if (unit === 'kg') {
+        if (value >= 1000) {
+            const tonnes = value / 1000;
+            return tonnes.toFixed(3).replace(/\.?0+$/, '') + ' tonnes';
+        }
+        return formatNumber(value) + ' kg';
+    } else if (unit === 'm³') {
+        return formatNumber(value) + ' m³';
+    }
+    return formatNumber(value);
+}
+
+function getStateColor(value) {
+    if (value < 0) {
+        return 'negative';
+    } else if (value > 0) {
+        return 'positive';
+    }
+    return 'zero';
+}
+
+// Placeholder for future external data integration
+function updateFirstRowData(newData) {
+    // This function will be implemented in the future to handle external data updates
+    console.log('Updating first row data:', newData);
+  
+}
+
+// Error handling utility function
+function handleError(error, context) {
+    console.error(`Error in ${context}:`, error);
+    // You could add more sophisticated error handling here,
+    // such as displaying an error message to the user
+}
+
+// Utility function to safely get an element by ID
+function getElementByIdSafe(id) {
+    const element = document.getElementById(id);
+    if (!element) {
+        throw new Error(`Element with id "${id}" not found`);
+    }
+    return element;
+}
+
+// Example of how you might use the error handling in a function
+function someFunction() {
+    try {
+        // Some code that might throw an error
+        const element = getElementByIdSafe('non-existent-id');
+        // Do something with element
+    } catch (error) {
+        handleError(error, 'someFunction');
+    }
+}
+
+
+    const sharedScript = document.createElement('script');
+    sharedScript.src = 'shared.js';
+    document.body.appendChild(sharedScript);
+
+window.addEventListener('message', async function(event) {
+    console.log('EnergyDashboard received message:', event.data);
+    
+    if (event.data.type === 'updateYearValue') {
+        const timePeriodSelect = document.getElementById('timePeriodSelect');
+        if (timePeriodSelect) {
+            totalDays = event.data.value; // This is now already in days
+            timePeriodSelect.value = 'day';
+            console.log('Calling updateTable with period:', 'day');
+            await updateTable('day');
+        }
+    } else if (event.data.type === 'updateState') {
+        sharedState = {...sharedState, ...event.data.state};
+        console.log('Updating shared state:', event.data.state);
+        
+        const timePeriodSelect = document.getElementById('timePeriodSelect');
+        if (timePeriodSelect) {
+            // Update table first
+            await updateTable(timePeriodSelect.value);
+            
+            // Now update Generation Costs
+            updateGenerationCosts();
+            
+            // Update selling prices
+            initializeSellingPrices();
+        }
+    }
+});
+
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'updateState') {
+        console.log('Received state update:', event.data.state);
+        Object.assign(sharedState, event.data.state);
+        console.log('Updated sharedState:', sharedState);
+        updateTable(document.getElementById('timePeriodSelect').value);
+    }
+});
+function notifyModulesReady() {
+    ['demandModule', 'availabilityModule', 'opexCapexModule'].forEach(moduleId => {
+        const moduleObject = document.getElementById(moduleId);
+        if (moduleObject && moduleObject.contentWindow) {
+            moduleObject.contentWindow.postMessage({type: 'parentReady'}, '*');
+        }
+    });
+}
+
+// Call this function when EnergyDashboard is fully loaded
+window.addEventListener('load', notifyModulesReady);
+document.addEventListener('DOMContentLoaded', initialize);
+
+</script>
+<script src="shared.js"></script>
+</body>
+</html>
+

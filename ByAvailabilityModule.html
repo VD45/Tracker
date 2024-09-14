@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avail Module</title>
+    <style>
+        .avail-module {
+            --avail-primary-color: #2c3e50;
+            --avail-secondary-color: #34495e;
+            --avail-background-color: #f5f7fa;
+            --avail-text-color: #ecf0f1;
+            --avail-border-color: #bdc3c7;
+            --avail-hover-color: #3498db;
+            --avail-low-efficiency: #e74c3c;
+            --avail-medium-efficiency: #f39c12;
+            --avail-high-efficiency: #2ecc71;
+            --avail-light-blue: #e6f3ff;
+            --avail-light-green: #e6fff0;
+            --avail-light-red: #ffe6e6;
+            --avail-hydrogen-color: #e74c3c;
+            --avail-cslg-color: #2ecc71;
+            --avail-padding-medium: 15px;
+            --avail-border-radius: 8px;
+            --avail-regenerative-color: #3498db;
+            --avail-third-party-color: #e74c3c;
+            --avail-button-color: #2980b9;
+            --avail-slider-fill-color: rgba(121, 182, 154, 0.77);
+            --avail-padding-small: 0.5rem;
+            --avail-padding-medium: 1rem;
+            --avail-handle-height: 20px;
+            --avail-left-column-width: 25%;
+            --avail-right-column-width: 75%;
+            --avail-gap-size: 1rem;
+
+            font-family: 'Roboto', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .avail-module .avail-body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            background-color: var(--avail-background-color);
+        }
+
+        .avail-module .avail-combined-module-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            gap: var(--avail-gap-size);
+            overflow: hidden;
+        }
+
+        .avail-module .avail-edc-left-column {
+            flex: 0 0 calc(var(--avail-left-column-width) - var(--avail-gap-size) / 2);
+            min-width: 300px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .avail-module .avail-edc-left-scroll-content {
+            padding: 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .avail-module .avail-edc-left-input-group {
+            background-color: var(--avail-background-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .avail-module .avail-edc-left-input-group--energy-demand {
+            background-color: var(--avail-light-blue);
+            border-bottom: 2px solid var(--avail-primary-color);
+        }
+
+        .avail-module .avail-edc-left-input-group--percentage {
+            background-color: var(--avail-light-red);
+        }
+
+        .avail-module .avail-edc-left-input-group--electricity-cost {
+            transition: background 0.3s ease;
+        }
+
+        .avail-module .avail-edc-left-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--avail-primary-color);
+        }
+
+        .avail-module .avail-edc-left-input-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .avail-module .avail-edc-left-input-wrapper {
+            display: inline-flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .avail-module .avail-edc-left-stepper-button {
+            width: 36px;
+            height: 36px;
+            background-color: var(--avail-primary-color);
+            color: #ffffff;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .avail-module .avail-edc-left-stepper-button:hover {
+            background-color: var(--avail-hover-color);
+        }
+
+        .avail-module .avail-edc-left-stepper-input {
+            width: 80px;
+            text-align: center;
+            border: none;
+            padding: 8px 5px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .avail-module .avail-edc-left-unit-display,
+        .avail-module .avail-edc-left-value-display {
+            font-weight: 700;
+            color: var(--avail-text-color);
+            margin-left: 10px;
+        }
+
+        .avail-module .avail-edc-left-unit-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .avail-module .avail-edc-left-unit-toggle-btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: var(--avail-primary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .avail-module .avail-edc-left-unit-toggle-btn:hover {
+            background-color: var(--avail-hover-color);
+        }
+
+        .avail-module .avail-edc-left-tooltip {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--avail-secondary-color);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: help;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .avail-module .avail-edc-left-tooltip:hover {
+            background-color: var(--avail-hover-color);
+        }
+
+        .avail-module .avail-edc-left-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background-color: var(--avail-secondary-color);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            width: 200px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: normal;
+            font-size: 12px;
+        }
+
+        .avail-module .avail-edc-left-tooltip:hover::after {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .avail-module .avail-edc-left-visual-indicator {
+            height: 4px;
+            background-color: var(--avail-medium-efficiency);
+            margin-top: 10px;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .avail-module .avail-edc-left-projection-timeline {
+            background-color: var(--avail-primary-color);
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avail-module .avail-edc-left-projection-timeline h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .avail-module .avail-edc-left-slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .avail-module .avail-edc-left-slider {
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+
+        .avail-module .avail-edc-left-slider-value {
+            font-weight: bold;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .avail-module .avail-edc-left-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .avail-module .avail-edc-left-slider:hover {
+            opacity: 1;
+        }
+
+        .avail-module .avail-edc-left-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        .avail-module .avail-edc-left-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        .avail-module .avail-ap-energy-parameter-dropdown {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .avail-module .avail-ap-dropdown-header {
+            background-color: var(--avail-primary-color);
+            color: #ffffff;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .avail-module .avail-ap-dropdown-header:hover {
+            background-color: var(--avail-secondary-color);
+        }
+
+        .avail-module .avail-ap-dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .avail-module .avail-ap-dropdown-content.show {
+            max-height: 1000px;
+        }
+
+        .avail-module .avail-ap-module-content {
+            padding: 15px;
+        }
+
+        .avail-module .avail-ap-parameter {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .avail-module .avail-ap-parameter-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--avail-primary-color);
+        }
+
+        .avail-module .avail-ap-parameter-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .avail-module .avail-ap-parameter-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .avail-module .avail-ap-input-group {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .avail-module .avail-ap-stepper-button {
+            width: 32px;
+            height: 32px;
+            background-color: var(--avail-primary-color);
+            color: #ffffff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .avail-module .avail-ap-stepper-button:hover {
+            background-color: var(--avail-hover-color);
+        }
+
+        .avail-module .avail-ap-stepper-input {
+            width: 60px;
+            text-align: center;
+            border: none;
+            padding: 8px 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .avail-module .avail-ap-unit-display {
+            margin-left: 12px;
+            font-weight: 500;
+            color: var(--avail-text-color);
+            font-size: 14px;
+        }
+
+        .avail-module .avail-ap-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 15px;
+            cursor: help;
+            width: 20px;
+            height: 20px;
+            background-color: var(--avail-secondary-color);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .avail-module .avail-ap-tooltip:hover {
+            background-color: var(--avail-hover-color);
+        }
+
+.avail-module .avail-ap-tooltip .avail-ap-tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--avail-secondary-color);
+    color: #ffffff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    right: 0;
+    margin-bottom: 5px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.avail-module .avail-ap-tooltip:hover .avail-ap-tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.avail-module .avail-ap-impact-indicator {
+    width: 100%;
+    height: 4px;
+    background-color: var(--avail-border-color);
+    margin-top: 12px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.avail-module .avail-ap-impact-indicator-bar {
+    height: 100%;
+    width: 50%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.avail-module .avail-ap-parameter--intake {
+    background-color: var(--avail-light-blue);
+}
+
+.avail-module .avail-ap-parameter--output {
+    background-color: var(--avail-light-green);
+}
+
+.avail-module .avail-ap-parameter--dss {
+    background-color: var(--avail-background-color);
+}
+
+.avail-module .avail-edc__right-column {
+    flex: 0 0 calc(var(--avail-right-column-width) - var(--avail-gap-size) / 2);
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    color: #ecf0f1;
+    overflow-y: auto;
+}
+
+.avail-module .avail-edc__top-cell {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--avail-padding-medium);
+    height: 100%;
+    padding-right: 1.5rem;
+}
+
+.avail-module .avail-edc__grid {
+    display: grid;
+    grid-template-columns: 40% 30% 30%;
+    gap: var(--avail-padding-medium);
+    margin-bottom: var(--avail-padding-medium);
+    position: relative;
+    padding-right: 1.5rem;
+}
+
+.avail-module .avail-edc__grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--avail-border-radius);
+    padding: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avail-module .avail-edc__grid-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.avail-module .avail-edc__grid-image {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+.avail-module .avail-edc__grid-label {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.avail-module .avail-edc__grid-item:first-child .avail-edc__grid-label {
+    color: var(--avail-hydrogen-color);
+}
+
+.avail-module .avail-edc__grid-item:not(:first-child) .avail-edc__grid-label {
+    color: var(--avail-cslg-color);
+}
+
+.avail-module .avail-edc__bottom-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    gap: 22%;
+}
+
+.avail-module .avail-edc__box {
+    border: 1px dashed #ecf0f1;
+    padding: 15px;
+    width: calc(50% - 15px);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--avail-border-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.avail-module .avail-edc__row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.avail-module .avail-edc__label {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    margin-right: 10px;
+    min-width: 120px;
+    font-weight: 600;
+    color: white;
+}
+
+.avail-module .avail-edc__label::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.avail-module .avail-edc__box:first-child .avail-edc__label::before {
+    background-color: var(--avail-hydrogen-color);
+}
+
+.avail-module .avail-edc__box:last-child .avail-edc__label::before {
+    background-color: var(--avail-cslg-color);
+}
+
+.avail-module .avail-edc__value {
+    display: inline-block;
+    min-width: 80px;
+    text-align: right;
+    background-color: transparent;
+    color: #ecf0f1;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.avail-module .avail-edc__unit-display {
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+@media (max-width: 768px) {
+    .avail-module .avail-combined-module-container {
+        flex-direction: column;
+        height: auto;
+    }
+    .avail-module .avail-edc-left-column,
+    .avail-module .avail-edc__right-column {
+        width: 100%;
+    }
+}
+
+.avail-module .avail-edc-left-unit-display,
+.avail-module .avail-edc-left-value-display,
+.avail-module .avail-edc-left-label {
+    color: var(--avail-primary-color);
+}
+
+.avail-module .avail-edc__right-column {
+    font-family: 'Rajdhani', Arial, sans-serif;
+}
+    </style>
+</head>
+<body>
+    <div id="avail-module-12345" class="avail-module">
+        <div class="avail-combined-module-container">
+            <!-- Energy Demand Calculator (left column) -->
+            <div class="avail-edc-left-column">
+                <div class="avail-edc-left-scroll-content">
+                   <div class="avail-edc-left-input-group avail-edc-left-input-group--energy-demand">
+                        <label class="avail-edc-left-label" for="avail-availableEnergy">Available Energy</label>
+                        <div class="avail-edc-left-input-content">
+                            <div class="avail-edc-left-input-wrapper">
+                                <button class="avail-edc-left-stepper-button" id="avail-availableEnergyDown">-</button>
+                                <input type="text" id="avail-availableEnergy" class="avail-edc-left-stepper-input" value="100 000">
+                                <button class="avail-edc-left-stepper-button" id="avail-availableEnergyUp">+</button>
+                            </div>
+                            <div class="avail-edc-left-unit-toggle">
+                                <span class="avail-edc-left-unit-display avail-energy-unit" id="avail-availableEnergyUnit">kWh/Day</span>
+                                <button class="avail-edc-left-unit-toggle-btn" id="avail-unitToggle">Use MWh</button>
+                            </div>
+                        </div>
+                        <div class="avail-edc-left-tooltip" data-tooltip="Total available energy per day">?</div>
+                    </div>
+
+                    <div class="avail-edc-left-input-group avail-edc-left-input-group--percentage">
+                        <label class="avail-edc-left-label" for="avail-electricityPercentage">Electricity</label>
+                        <div class="avail-edc-left-input-content">
+                            <div class="avail-edc-left-input-wrapper">
+                                <button class="avail-edc-left-stepper-button" id="avail-electricityPercentageDown">-</button>
+                                <input type="text" id="avail-electricityPercentage" class="avail-edc-left-stepper-input" value="50.0">
+                                <button class="avail-edc-left-stepper-button" id="avail-electricityPercentageUp">+</button>
+                            </div>
+                            <span class="avail-edc-left-unit-display">%</span>
+                            <span id="avail-electricityValue" class="avail-edc-left-value-display">50000</span>
+                            <span class="avail-edc-left-unit-display avail-energy-unit" id="avail-electricityUnit">kWh/Day</span>
+                        </div>
+                        <div class="avail-edc-left-tooltip" data-tooltip="Percentage of energy allocated to Electricity">?</div>
+                        <div class="avail-edc-left-visual-indicator" id="avail-electricityIndicator"></div>
+                    </div>
+
+                    <div class="avail-edc-left-input-group avail-edc-left-input-group--percentage">
+                        <label class="avail-edc-left-label" for="avail-coolingPercentage">Cooling</label>
+                        <div class="avail-edc-left-input-content">
+                            <div class="avail-edc-left-input-wrapper">
+                                <button class="avail-edc-left-stepper-button" id="avail-coolingPercentageDown">-</button>
+                                <input type="text" id="avail-coolingPercentage" class="avail-edc-left-stepper-input" value="50.0">
+                                <button class="avail-edc-left-stepper-button" id="avail-coolingPercentageUp">+</button>
+                            </div>
+                            <span class="avail-edc-left-unit-display">%</span>
+                            <span id="avail-coolingValue" class="avail-edc-left-value-display">50000</span>
+                            <span class="avail-edc-left-unit-display avail-energy-unit" id="avail-coolingUnit">kWh/Day</span>
+                        </div>
+                        <div class="avail-edc-left-tooltip" data-tooltip="Percentage of energy allocated to Cooling">?</div>
+                        <div class="avail-edc-left-visual-indicator" id="avail-coolingIndicator"></div>
+                    </div>
+
+                    <div class="avail-edc-left-input-group">
+                        <label class="avail-edc-left-label" for="avail-hydrogen">Hydrogen</label>
+                        <div class="avail-edc-left-input-content">
+                            <div class="avail-edc-left-input-wrapper">
+                                <button class="avail-edc-left-stepper-button" id="avail-hydrogenDown">-</button>
+                                <input type="text" id="avail-hydrogen" class="avail-edc-left-stepper-input" value="0">
+                                <button class="avail-edc-left-stepper-button" id="avail-hydrogenUp">+</button>
+                            </div>
+                            <span class="avail-edc-left-unit-display">kg/day</span>
+                        </div>
+                        <div class="avail-edc-left-tooltip" data-tooltip="Amount of hydrogen produced per day">?</div>
+                    </div>
+
+                    <!-- Updated Electricity Cost component -->
+                    <div class="avail-edc-left-input-group avail-edc-left-input-group--electricity-cost">
+                        <label class="avail-edc-left-label" for="avail-electricityCost" style="color: white;">[Available] Electricity Cost</label>
+                        <div class="avail-edc-left-input-content">
+                            <div class="avail-edc-left-input-wrapper">
+                                <button class="avail-edc-left-stepper-button" id="avail-electricityCostDown">-</button>
+                                <input type="text" id="avail-electricityCost" class="avail-edc-left-stepper-input" value="0.010">
+                                <button class="avail-edc-left-stepper-button" id="avail-electricityCostUp">+</button>
+                            </div>
+                            <span class="avail-edc-left-unit-display">$/kWh</span>
+                        </div>
+                        <div class="avail-edc-left-tooltip" data-tooltip="Cost of available electricity per kWh">?</div>
+                    </div>
+
+                    <div class="avail-ap-energy-parameter-dropdown">
+                        <div class="avail-ap-dropdown-header" id="avail-apDropdownHeader">
+                            <span>Additional Parameters</span>
+                            <span class="avail-ap-dropdown-arrow">▼</span>
+                        </div>
+                        <div class="avail-ap-dropdown-content" id="avail-apDropdownContent">
+                            <div class="avail-ap-module-content">
+                                <div class="avail-ap-parameter avail-ap-parameter--intake">
+                                    <div class="avail-ap-parameter-label">
+                                        <span class="avail-ap-parameter-icon">⏱️</span>
+                                        Intake Hours
+                                    </div>
+                                    <div class="avail-ap-parameter-content">
+                                        <div class="avail-ap-input-group">
+                                            <button class="avail-ap-stepper-button" data-action="decrement" aria-label="Decrease Intake Hours">-</button>
+                                            <input type="text" id="avail-intakeHours" class="avail-ap-stepper-input" value="12.0" data-param="intakeHours" aria-label="Intake Hours">
+                                            <button class="avail-ap-stepper-button" data-action="increment" aria-label="Increase Intake Hours">+</button>
+                                        </div>
+                                        <span class="avail-ap-unit-display">hours</span>
+                                        <div class="avail-ap-tooltip">?
+                                            <span class="avail-ap-tooltiptext">The number of hours per day during which the GenBox system takes in energy from the grid or renewable sources.</span>
+                                        </div>
+                                    </div>
+                                    <div class="avail-ap-impact-indicator">
+                                        <div class="avail-ap-impact-indicator-bar" id="avail-intakeHoursImpact"></div>
+                                    </div>
+                                </div>
+                                <div class="avail-ap-parameter avail-ap-parameter--intake">
+                                    <div class="avail-ap-parameter-label">
+                                        <span class="avail-ap-parameter-icon">📈</span>
+                                        Intake OP-P Factor
+                                    </div>
+                                    <div class="avail-ap-parameter-content">
+                                        <div class="avail-ap-input-group">
+                                            <button class="avail-ap-stepper-button" data-action="decrement" aria-label="Decrease Intake OP-P Factor">-</button>
+                                            <input type="text" id="avail-intakeOPPFactor" class="avail-ap-stepper-input" value="1.5" data-param="intakeOPPFactor" aria-label="Intake OP-P Factor">
+                                            <button class="avail-ap-stepper-button" data-action="increment" aria-label="Increase Intake OP-P Factor">+</button>
+                                        </div>
+                                        <div class="avail-ap-tooltip">?
+                                            <span class="avail-ap-tooltiptext">Intake Off-Peak to Peak Difference Factor. Quantifies the fluctuation in available intermittent energy.</span>
+                                        </div>
+                                    </div>
+                                    <div class="avail-ap-impact-indicator">
+                                        <div class="avail-ap-impact-indicator-bar" id="avail-intakeOPPFactorImpact"></div>
+                                    </div>
+                                </div>
+                                <div class="avail-ap-parameter avail-ap-parameter--output">
+                                    <div class="avail-ap-parameter-label">
+                                        <span class="avail-ap-parameter-icon">⏱️</span>
+                                        Output Hours
+                                    </div>
+                                    <div class="avail-ap-parameter-content">
+                                        <div class="avail-ap-input-group">
+                                            <button class="avail-ap-stepper-button" data-action="decrement" aria-label="Decrease Output Hours">-</button>
+                                            <input type="text" id="avail-outputHours" class="avail-ap-stepper-input" value="24.0" data-param="outputHours" aria-label="Output Hours">
+                                            <button class="avail-ap-stepper-button" data-action="increment" aria-label="Increase Output Hours">+</button>
+                                        </div>
+                                        <span class="avail-ap-unit-display">hours</span>
+                                        <div class="avail-ap-tooltip">?
+                                            <span class="avail-ap-tooltiptext">The number of hours per day during which the GenBox system provides energy output.</span>
+                                        </div>
+                                    </div>
+                                    <div class="avail-ap-impact-indicator">
+                                        <div class="avail-ap-impact-indicator-bar" id="avail-outputHoursImpact"></div>
+                                    </div>
+                                </div>
+                                <div class="avail-ap-parameter avail-ap-parameter--output">
+                                    <div class="avail-ap-parameter-label">
+                                        <span class="avail-ap-parameter-icon">📉</span>
+                                        Output OP-P Factor
+                                    </div>
+                                    <div class="avail-ap-parameter-content">
+                                        <div class="avail-ap-input-group">
+                                            <button class="avail-ap-stepper-button" data-action="decrement" aria-label="Decrease Output OP-P Factor">-</button>
+                                            <input type="text" id="avail-outputOPPFactor" class="avail-ap-stepper-input" value="1.5" data-param="outputOPPFactor" aria-label="Output OP-P Factor">
+                                            <button class="avail-ap-stepper-button" data-action="increment" aria-label="Increase Output OP-P Factor">+</button>
+                                        </div>
+                                        <div class="avail-ap-tooltip">?
+                                            <span class="avail-ap-tooltiptext">Output Off-Peak to Peak Difference Factor. Measures the variation in energy demand throughout the day.</span>
+                                        </div>
+                                    </div>
+                                    <div class="avail-ap-impact-indicator">
+                                        <div class="avail-ap-impact-indicator-bar" id="avail-outputOPPFactorImpact"></div>
+                                    </div>
+                                </div>
+                                <div class="avail-ap-parameter avail-ap-parameter--dss">
+                                    <div class="avail-ap-parameter-label">
+                                        <span class="avail-ap-parameter-icon">🔌</span>
+                                        DSS
+                                    </div>
+                                    <div class="avail-ap-parameter-content">
+                                        <div class="avail-ap-input-group">
+                                            <button class="avail-ap-stepper-button" data-action="decrement" aria-label="Decrease DSS">-</button>
+                                            <input type="text" id="avail-dss" class="avail-ap-stepper-input" value="30.0" data-param="dss" aria-label="DSS">
+                                            <button class="avail-ap-stepper-button" data-action="increment" aria-label="Increase DSS">+</button>
+                                        </div>
+                                        <span class="avail-ap-unit-display">%</span>
+                                        <div class="avail-ap-tooltip">?
+                                            <span class="avail-ap-tooltiptext">Direct Supply from Source. Represents the percentage of electricity that goes directly from the intermittent source to the end user through the GenBox.</span>
+                                        </div>
+                                    </div>
+                                    <div class="avail-ap-impact-indicator">
+                                        <div class="avail-ap-impact-indicator-bar" id="avail-dssImpact"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integrated Energy Distribution Module (right column) -->
+            <div class="avail-edc__right-column">
+                <div class="avail-edc__top-cell">
+                    <div class="avail-edc__grid" role="group" aria-label="Energy Type Visuals">
+                        <div class="avail-edc__grid-item">
+                            <img src="Images/HydrogenGenerator.png" alt="Hydrogen Generator" class="avail-edc__grid-image">
+                            <div class="avail-edc__grid-label">Hydrogen</div>
+                        </div>
+                        <div class="avail-edc__grid-item">
+                            <img src="Images/CslgElectricity.png" alt="Electricity" class="avail-edc__grid-image">
+                            <div class="avail-edc__grid-label">Electricity</div>
+                        </div>
+                        <div class="avail-edc__grid-item">
+                            <img src="Images/CslgAC.png" alt="Cooling" class="avail-edc__grid-image">
+                            <div class="avail-edc__grid-label">Cooling</div>
+                        </div>
+                    </div>
+
+                    <div class="avail-edc__bottom-content">
+                        <div class="avail-edc__box">
+                            <div class="avail-edc__row">
+                                <span class="avail-edc__label">Efficiency:</span>
+                                <span id="avail-efficiencyHValue" class="avail-edc__value">94</span>
+                                <span class="avail-edc__unit-display">%</span>
+                            </div>
+                            <div class="avail-edc__row">
+                                <span class="avail-edc__label">Installed Effect:</span>
+                                <span id="avail-installedEffectHValue" class="avail-edc__value">0</span>
+                                <span id="avail-installedEffectHUnit" class="avail-edc__unit-display">kW</span>
+                            </div>
+                            <div class="avail-edc__row">
+                                <span class="avail-edc__label">Installed Units:</span>
+                                <span id="avail-installedUnitsHValue" class="avail-edc__value">0</span>
+                            </div>
+                        </div>
+                        <div class="avail-edc__box">
+                            <div class="avail-edc__row">
+                                <span class="avail-edc__label">Cogeneration Efficiency:</span>
+                                <span id="avail-efficiencyECValue" class="avail-edc__value">85</span>
+                                <span class="avail-edc__unit-display">%</span>
+                            </div>
+                            <div class="avail-edc__row">
+                                <span class="avail-edc__label">Installed Effect:</span>
+                                <span id="avail-installedEffectECValue" class="avail-edc__value">100000</span>
+                                <span id="avail-installedEffectECUnit" class="avail-edc__unit-display">kW</span>
+                            </div>
+                            <div class="avail-edc__row">
+                                <span class="avail-edc__label">Installed Units:</span>
+                                <span id="avail-installedUnitsECValue" class="avail-edc__value">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+    function initAvailabilityModule(moduleId) {
+        const module = document.getElementById(moduleId);
+        if (!module) return;
+
+        let isKWh = true;
+        let energyDemandStep = 500;
+        let electricityCoolingStep = 0.5;
+        let availableEnergyKWh = 100000; // Store available energy in kWh
+        let availableEnergy;
+
+
+        function formatNumber(number, decimalPlaces = 0, forceDecimals = false) {
+            const formatted = number.toFixed(decimalPlaces);
+            if (forceDecimals) {
+                return formatted.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            }
+            return parseFloat(formatted).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        function parseFormattedNumber(str) {
+            return parseFloat(str.replace(/\s/g, ''));
+        }
+
+        function updateElectricityCostBackground(value) {
+            const minValue = 0.010;
+            const orangeThreshold = 0.050;
+            const redThreshold = 0.100;
+
+            let backgroundColor;
+            if (value <= orangeThreshold) {
+                const percentage = (value - minValue) / (orangeThreshold - minValue);
+                backgroundColor = `linear-gradient(to right, #4CAF50 ${(1 - percentage) * 100}%, #FFA500 ${percentage * 100}%)`;
+            } else if (value <= redThreshold) {
+                const percentage = (value - orangeThreshold) / (redThreshold - orangeThreshold);
+                backgroundColor = `linear-gradient(to right, #FFA500 ${(1 - percentage) * 100}%, #FF0000 ${percentage * 100}%)`;
+            } else {
+                backgroundColor = '#FF0000';
+            }
+            module.querySelector('.avail-edc-left-input-group--electricity-cost').style.background = backgroundColor;
+        }
+
+        function calculateCogenerationEfficiency(A, B) {
+            if (Math.round(A + B) !== 100) {
+                console.error("The sum of electricity and cooling must be 100");
+                return 85; // Default value in case of error
+            }
+            let C;
+            if (A === 50 && B === 50) {
+                C = 85;
+            } else if (B === 0) {
+                C = 60;
+            } else if (B === 100) {
+                C = 75;
+            } else {
+                if (B > 50) {
+                    C = 85 - (10 * (B - 50) / 50); // Decrease linearly from 85 to 75
+                } else {
+                    C = 60 + (25 * Math.min(A, B) / 50); // Interpolation from 60 to 85
+                }
+            }
+            return Math.round(C * 10) / 10; // Round to one decimal place
+        }
+
+        function calculateOutputs() {
+            const availableEnergy = parseFormattedNumber(module.querySelector('#avail-availableEnergy').value);
+            const hydrogenProduction = parseFormattedNumber(module.querySelector('#avail-hydrogen').value);
+            const dssPercentage = parseFormattedNumber(module.querySelector('#avail-dss').value) / 100;
+            const availElectricityPercentage = parseFormattedNumber(module.querySelector('#avail-electricityPercentage').value) / 100;
+            const availCoolingPercentage = 1 - availElectricityPercentage;
+            const efficiencyH = parseFloat(module.querySelector('#avail-efficiencyHValue').textContent) / 100;
+            const intakeHours = parseFloat(module.querySelector('#avail-intakeHours').value);
+            const intakeOPPFactor = parseFloat(module.querySelector('#avail-intakeOPPFactor').value);
+
+            // Calculate energy for hydrogen production
+            const hydrogenEnergy = hydrogenProduction * 33.33/efficiencyH;
+
+            // Calculate DSS energy
+            const dssEnergy = availableEnergy * dssPercentage;
+
+            // Calculate non-DSS energy
+            const nonDssEnergy = availableEnergy - dssEnergy;
+
+            // Calculate energy needed for hydrogen to meet non-DSS demand
+            const hydrogenForNonDss = (nonDssEnergy*efficiencyH) / (33.33);
+
+            // Total hydrogen needed (for non-DSS energy + additional production)
+            const totalHydrogen = hydrogenForNonDss;
+
+            // Calculate installed effect for hydrogen
+            const installedEffectH = (nonDssEnergy / intakeHours) * intakeOPPFactor;
+            const installedUnitsH = Math.max(1, Math.ceil(installedEffectH / 50));
+
+            // Remaining energy after hydrogen production
+            const remainingEnergy = nonDssEnergy - hydrogenEnergy;
+
+            // Calculate cogeneration efficiency
+            const cogenerationEfficiency = calculateCogenerationEfficiency(availElectricityPercentage * 100, availCoolingPercentage * 100) / 100;
+
+            // Distribute remaining energy between electricity and cooling, applying both efficiencies
+            const electricityOutput = (remainingEnergy * efficiencyH * cogenerationEfficiency + dssEnergy) * availElectricityPercentage;
+            const coolingOutput = (remainingEnergy * efficiencyH * cogenerationEfficiency + dssEnergy) * availCoolingPercentage;
+
+            // Calculate installed effect for electricity and cooling
+            const outputHours = parseFloat(module.querySelector('#avail-outputHours').value);
+            const outputOPPFactor = parseFloat(module.querySelector('#avail-outputOPPFactor').value);
+            const installedEffectEC = (electricityOutput + coolingOutput - dssEnergy) / outputHours * outputOPPFactor;
+            const installedUnitsEC = Math.ceil(installedEffectEC / 100);
+
+            return {
+                hydrogen: hydrogenEnergy,
+                electricity: electricityOutput,
+                cooling: coolingOutput,
+                dssContribution: dssEnergy,
+                cogenerationEfficiency: cogenerationEfficiency,
+                installedEffectH: installedEffectH,
+                installedUnitsH: installedUnitsH,
+                installedEffectEC: installedEffectEC,
+                installedUnitsEC: installedUnitsEC
+            };
+        }
+
+        function updateDisplays() {
+            availableEnergy = isKWh ? availableEnergyKWh : availableEnergyKWh / 1000;
+    const outputs = calculateOutputs();
+   //         const outputs = calculateOutputs();
+
+            const efficiencyH = parseFloat(module.querySelector('#avail-efficiencyHValue').textContent) / 100;
+            const efficiencyEC = parseFloat(module.querySelector('#avail-efficiencyECValue').textContent) / 100;
+
+            module.querySelector('#avail-electricityValue').textContent = formatNumber(outputs.electricity, isKWh ? 0 : 2);
+            module.querySelector('#avail-coolingValue').textContent = formatNumber(outputs.cooling, isKWh ? 0 : 2);
+            module.querySelector('#avail-efficiencyHValue').textContent = "94";
+            module.querySelector('#avail-efficiencyECValue').textContent = (outputs.cogenerationEfficiency * 100).toFixed(1);
+
+            module.querySelector('#avail-installedEffectHValue').textContent = formatNumber(isKWh ? outputs.installedEffectH : outputs.installedEffectH / 1000, isKWh ? 0 : 2);
+            module.querySelector('#avail-installedUnitsHValue').textContent = outputs.installedUnitsH;
+            module.querySelector('#avail-installedEffectECValue').textContent = formatNumber(isKWh ? outputs.installedEffectEC : outputs.installedEffectEC / 1000, isKWh ? 0 : 2);
+            module.querySelector('#avail-installedUnitsECValue').textContent = outputs.installedUnitsEC;
+
+            // Update visual indicators
+            const totalEnergy = outputs.hydrogen + outputs.electricity + outputs.cooling;
+            module.querySelector('#avail-electricityIndicator').style.width = `${(outputs.electricity / totalEnergy) * 100}%`;
+            module.querySelector('#avail-coolingIndicator').style.width = `${(outputs.cooling / totalEnergy) * 100}%`;
+
+            // Update electricity cost background
+            const availElectricityCost = parseFormattedNumber(module.querySelector('#avail-electricityCost').value);
+            updateElectricityCostBackground(availElectricityCost);
+
+            // Handle hydrogen input when DSS is 100%
+            const dssPercentage = parseFormattedNumber(module.querySelector('#avail-dss').value);
+            const hydrogenInput = module.querySelector('#avail-hydrogen');
+            if (dssPercentage === 100) {
+                hydrogenInput.disabled = true;
+                hydrogenInput.value = '0';
+            } else {
+                hydrogenInput.disabled = false;
+            }
+
+            // Update parent state
+            updateParentState({
+            	availableEnergy:availableEnergy,
+            	dssPercentage :parseFormattedNumber(module.querySelector('#avail-dss').value),
+                availEfficiencyHValue: parseFloat(module.querySelector('#avail-efficiencyHValue').textContent),
+                availEfficiencyECValue: parseFloat(module.querySelector('#avail-efficiencyECValue').textContent),
+                availHydrogen: parseInt(document.getElementById( 'avail-hydrogen').value.replace(/\s/g, ''), 10),
+               // availHydrogen: parseFloat(module.querySelector('#avail-hydrogen').value),
+                //availHydrogenEnergy:
+                availElecGeneration: outputs.electricity,
+                availCoolGeneration: outputs.cooling,
+                availElectricityCost: availElectricityCost,
+              //  availElectricityPercentage: parseFormattedNumber(module.querySelector('#avail-electricityPercentage').value) / 100,
+             //   availCoolingPercentage: parseFormattedNumber(module.querySelector('#avail-coolingPercentage').value) / 100,
+               availElectricityPercentage: parseFormattedNumber(module.querySelector('#avail-electricityPercentage').value) ,
+               availCoolingPercentage: parseFormattedNumber(module.querySelector('#avail-coolingPercentage').value),
+               
+                availInstalledUnitsHValue: outputs.installedUnitsH,
+                availInstalledUnitsECValue: outputs.installedUnitsEC,
+                availIntakeHours: parseFloat(module.querySelector('#avail-intakeHours').value),
+                availIntakeOPPFactor: parseFloat(module.querySelector('#avail-intakeOPPFactor').value),
+                availOutputHours: parseFloat(module.querySelector('#avail-outputHours').value),
+                availOutputOPPFactor: parseFloat(module.querySelector('#avail-outputOPPFactor').value),
+                availInstalledEffectHValue: outputs.installedEffectH,
+                availInstalledEffectECValue: outputs.installedEffectEC,
+            });
+        }
+
+        function createStepper(input, initialStep, min, max, isPercentage = false) {
+            const upButton = module.querySelector('#' + input.id + 'Up');
+            const downButton = module.querySelector('#' + input.id + 'Down');
+            let step = initialStep;
+
+            function updateValue(increment) {
+        let value = parseFormattedNumber(input.value);
+        if (input.id === 'avail-availableEnergy') {
+            step = energyDemandStep;
+        } else if (input.id === 'avail-electricityPercentage' || input.id === 'avail-coolingPercentage') {
+            step = electricityCoolingStep;
+        }
+
+        value = Math.max(min, Math.min(max, value + increment * step));
+        if (input.id === 'avail-availableEnergy') {
+            value = Math.round(value / step) * step;
+            availableEnergyKWh = isKWh ? value : value * 1000;
+        }
+        input.value = formatNumber(value, input.id === 'avail-electricityCost' ? 3 : (input.id === 'avail-availableEnergy' ? (isKWh ? 0 : 2) : 1));
+        if (isPercentage) {
+            handlePercentageChange(input);
+        } else {
+            updateDisplays();
+        }
+    }
+
+            function handleButtonPress(increment) {
+                let intervalId = null;
+                
+                function startIncrement() {
+                    updateValue(increment);
+                    intervalId = setInterval(() => updateValue(increment), 100);
+                }
+                
+                function stopIncrement() {
+                    if (intervalId) {
+                        clearTimeout(intervalId);
+                        intervalId = null;
+                    }
+                }
+                
+                const button = increment > 0 ? upButton : downButton;
+                button.addEventListener('mousedown', startIncrement);
+                button.addEventListener('mouseup', stopIncrement);
+                button.addEventListener('mouseleave', stopIncrement);
+            }
+
+            handleButtonPress(1);  // For up button
+            handleButtonPress(-1); // For down button
+
+            input.addEventListener('input', function() {
+                let value = parseFormattedNumber(this.value);
+                if (!isNaN(value)) {
+                    value = Math.max(min, Math.min(max, value));
+                    if (this.id === 'avail-availableEnergy') {
+                        value = Math.round(value / energyDemandStep) * energyDemandStep;
+                        availableEnergyKWh = isKWh ? value : value * 1000;
+                    }
+                    this.value = formatNumber(value, this.id === 'avail-electricityCost' ? 3 : (this.id === 'avail-availableEnergy' ? (isKWh ? 0 : 2) : 1));
+                    if (isPercentage) {
+                        handlePercentageChange(this);
+                    } else {
+                        updateDisplays();
+                    }
+                }
+            });
+
+            input.addEventListener('blur', function() {
+                let value = parseFormattedNumber(this.value);
+                if (isNaN(value)) {
+                    value = 0;
+                }
+                if (this.id === 'avail-availableEnergy') {
+                    value = Math.round(value / energyDemandStep) * energyDemandStep;
+                    availableEnergyKWh = isKWh ? value : value * 1000;
+                }
+                this.value = formatNumber(value, this.id === 'avail-electricityCost' ? 3 : (this.id === 'avail-availableEnergy' ? (isKWh ? 0 : 2) : 1));
+                updateDisplays();
+            });
+        }
+
+        function handlePercentageChange(changedInput) {
+            const electricityInput = module.querySelector('#avail-electricityPercentage');
+            const coolingInput = module.querySelector('#avail-coolingPercentage');
+            const changedValue = parseFormattedNumber(changedInput.value);
+            const newValue = Math.min(100, Math.max(0, changedValue));
+            changedInput.value = formatNumber(newValue, 1);
+            
+            if (changedInput === electricityInput) {
+                coolingInput.value = formatNumber(100 - newValue, 1);
+            } else {
+                electricityInput.value = formatNumber(100 - newValue, 1);
+            }
+            
+            updateDisplays();
+        }
+
+        function updateApValue(input, increment) {
+            let value = parseFloat(input.value);
+            const param = input.dataset.param;
+            let min, max, step;
+
+            switch(param) {
+                case 'intakeHours':
+                case 'outputHours':
+                    min = 1; max = 24; step = 0.5;
+                    break;
+                case 'dss':
+                    min = 0; max = 100; step = 1;
+                    break;
+                default: // for both OP-P Factors
+                    min = 1.0; max = 10.0; step = 0.1;
+            }
+
+            value = Math.min(max, Math.max(min, value + increment * step));
+            input.value = value.toFixed(param === 'dss' ? 0 : 1);
+
+            updateApImpactIndicator(param, value, min, max);
+            updateDisplays();
+        }
+
+        function updateApImpactIndicator(param, value, min, max) {
+    const indicator = module.querySelector(`#avail-${param}Impact`);
+    const percentage = ((value - min) / (max - min)) * 100;
+    indicator.style.width = `${percentage}%`;
+
+    if (param === 'intakeHours' || param === 'outputHours') {
+        indicator.style.backgroundColor = percentage < 33 ? 'var(--avail-low-efficiency)' : 
+                                          percentage < 66 ? 'var(--avail-medium-efficiency)' : 
+                                          'var(--avail-high-efficiency)';
+    } else {
+        indicator.style.backgroundColor = percentage < 33 ? 'var(--avail-high-efficiency)' : 
+                                          percentage < 66 ? 'var(--avail-medium-efficiency)' : 
+                                          'var(--avail-low-efficiency)';
+    }
+}
+
+function handleApButtonPress(button, action) {
+    const input = button.parentNode.querySelector('.avail-ap-stepper-input');
+    const increment = action === 'increment' ? 1 : -1;
+    updateApValue(input, increment);
+
+    let intervalId = setInterval(() => {
+        updateApValue(input, increment);
+    }, 150);
+
+    function stopIncrement() {
+        clearInterval(intervalId);
+        document.removeEventListener('mouseup', stopIncrement);
+        button.removeEventListener('mouseleave', stopIncrement);
+    }
+
+    document.addEventListener('mouseup', stopIncrement);
+    button.addEventListener('mouseleave', stopIncrement);
+}
+
+// Initialize steppers
+createStepper(module.querySelector('#avail-availableEnergy'), energyDemandStep, 0, Infinity);
+createStepper(module.querySelector('#avail-hydrogen'), 50, 0, Infinity);
+createStepper(module.querySelector('#avail-electricityPercentage'), electricityCoolingStep, 0, 100, true);
+createStepper(module.querySelector('#avail-coolingPercentage'), electricityCoolingStep, 0, 100, true);
+createStepper(module.querySelector('#avail-electricityCost'), 0.001, 0, Infinity);
+
+// Unit toggle functionality
+module.querySelector('#avail-unitToggle').addEventListener('click', function() {
+    isKWh = !isKWh;
+    this.textContent = isKWh ? 'Use MWh' : 'Use kWh';
+    module.querySelectorAll('.avail-energy-unit').forEach(el => {
+        el.textContent = isKWh ? 'kWh/Day' : 'MWh/Day';
+    });
+    if (isKWh) {
+        energyDemandStep = 500;
+        availableEnergyKWh = parseFormattedNumber(module.querySelector('#avail-availableEnergy').value);
+    } else {
+        energyDemandStep = 0.5;
+        availableEnergyKWh = parseFormattedNumber(module.querySelector('#avail-availableEnergy').value) * 1000;
+    }
+    
+    module.querySelector('#avail-installedEffectHUnit').textContent = isKWh ? 'kW' : 'MW';
+    module.querySelector('#avail-installedEffectECUnit').textContent = isKWh ? 'kW' : 'MW';
+
+    updateDisplays();
+});
+
+// Additional Parameters Dropdown
+const apDropdownHeader = module.querySelector('#avail-apDropdownHeader');
+const apDropdownContent = module.querySelector('#avail-apDropdownContent');
+const apDropdownArrow = apDropdownHeader.querySelector('.avail-ap-dropdown-arrow');
+
+apDropdownHeader.addEventListener('click', function() {
+    apDropdownContent.classList.toggle('show');
+    apDropdownArrow.textContent = apDropdownContent.classList.contains('show') ? '▲' : '▼';
+});
+
+// Add event listeners for additional parameter buttons
+module.querySelectorAll('.avail-ap-stepper-button').forEach(button => {
+    button.addEventListener('mousedown', function() {
+        handleApButtonPress(this, this.dataset.action);
+    });
+});
+
+module.querySelectorAll('.avail-ap-stepper-input').forEach(input => {
+    input.addEventListener('blur', function() {
+        updateApValue(this, 0);
+    });
+
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            updateApValue(this, 0);
+        }
+    });
+});
+
+// Initialize impact indicators for additional parameters
+module.querySelectorAll('.avail-ap-stepper-input').forEach(input => {
+    updateApValue(input, 0);
+});
+
+// Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Debounced version of updateDisplays
+const debouncedUpdateDisplays = debounce(updateDisplays, 300);
+
+// Add event listeners to all relevant inputs
+const relevantInputs = [
+    'avail-availableEnergy', 'avail-hydrogen', 'avail-electricityCost', 'avail-electricityPercentage', 'avail-coolingPercentage'
+];
+
+relevantInputs.forEach(inputId => {
+    module.querySelector('#' + inputId).addEventListener('input', debouncedUpdateDisplays);
+});
+
+// Add event listeners to additional parameters
+module.querySelectorAll('.avail-ap-stepper-input').forEach(input => {
+    input.addEventListener('input', debouncedUpdateDisplays);
+});
+
+// Function to set initial state
+function setInitialState() {
+    module.querySelectorAll('.avail-energy-unit').forEach(el => {
+        el.textContent = 'kWh/Day';
+    });
+    module.querySelector('#avail-unitToggle').textContent = 'Use MWh';
+    module.querySelector('#avail-installedEffectHUnit').textContent = 'kW';
+    module.querySelector('#avail-installedEffectECUnit').textContent = 'kW';
+    
+    // Set initial electricity and cooling percentages
+    module.querySelector('#avail-electricityPercentage').value = 50;
+    module.querySelector('#avail-coolingPercentage').value = 50;
+    
+    // Calculate and set initial cogeneration efficiency
+    const initialEfficiency = calculateCogenerationEfficiency(50, 50);
+    module.querySelector('#avail-efficiencyECValue').textContent = initialEfficiency;
+    
+    updateDisplays();
+}
+
+// Call setInitialState to ensure correct initial setup
+setInitialState();
+}
+
+// Initialize all instances of this module on the page
+document.querySelectorAll('.avail-module').forEach(function(module) {
+    initAvailabilityModule(module.id);
+});
+
+
+// Listen for messages from the parent window
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'stateUpdate') {
+        updateAvailabilityState(event.data.state);
+    } else if (event.data.type === 'parentReady') {
+        // Initialize all instances of this module on the page
+        document.querySelectorAll('.avail-module').forEach(function(module) {
+            initAvailabilityModule(module.id);
+        });
+    }
+});
+
+function updateAvailabilityState(newState) {
+    // Update available energy
+    if (newState.availableEnergy !== undefined) {
+        document.getElementById('avail-availableEnergy').value = newState.availableEnergy;
+    }
+
+    // Update electricity percentage
+    if (newState.availElectricityPercentage !== undefined) {
+        document.getElementById('avail-electricityPercentage').value = newState.availElectricityPercentage;
+    }
+
+    // Update cooling percentage
+    if (newState.availCoolingPercentage !== undefined) {
+        document.getElementById('avail-coolingPercentage').value = newState.availCoolingPercentage;
+    }
+
+    // Update hydrogen production
+    if (newState.availHydrogen !== undefined) {
+        document.getElementById('avail-hydrogen').value = newState.availHydrogen;
+    }
+
+    // Update electricity cost
+    if (newState.availElectricityCost !== undefined) {
+        document.getElementById('avail-electricityCost').value = newState.availElectricityCost;
+    }
+
+    // Update intake hours
+    if (newState.availIntakeHours !== undefined) {
+        document.getElementById('avail-intakeHours').value = newState.availIntakeHours;
+    }
+
+    // Update intake OP-P factor
+    if (newState.availIntakeOPPFactor !== undefined) {
+        document.getElementById('avail-intakeOPPFactor').value = newState.availIntakeOPPFactor;
+    }
+
+    // Update output hours
+    if (newState.availOutputHours !== undefined) {
+        document.getElementById('avail-outputHours').value = newState.availOutputHours;
+    }
+
+    // Update output OP-P factor
+    if (newState.availOutputOPPFactor !== undefined) {
+        document.getElementById('avail-outputOPPFactor').value = newState.availOutputOPPFactor;
+    }
+
+    // Update DSS (Direct Supply from Source)
+    if (newState.availDSS !== undefined) {
+        document.getElementById('avail-dss').value = newState.availDSS;
+    }
+
+    // Update efficiency values
+    if (newState.availEfficiencyHValue !== undefined) {
+        document.getElementById('avail-efficiencyHValue').textContent = newState.availEfficiencyHValue;
+    }
+    if (newState.availEfficiencyECValue !== undefined) {
+        document.getElementById('avail-efficiencyECValue').textContent = newState.availEfficiencyECValue;
+    }
+
+    // Update installed effect values
+    if (newState.availInstalledEffectHValue !== undefined) {
+        document.getElementById('avail-installedEffectHValue').textContent = newState.availInstalledEffectHValue;
+    }
+    if (newState.availInstalledEffectECValue !== undefined) {
+        document.getElementById('avail-installedEffectECValue').textContent = newState.availInstalledEffectECValue;
+    }
+
+    // Update installed units values
+    if (newState.availInstalledUnitsHValue !== undefined) {
+        document.getElementById('avail-installedUnitsHValue').textContent = newState.availInstalledUnitsHValue;
+    }
+    if (newState.availInstalledUnitsECValue !== undefined) {
+        document.getElementById('avail-installedUnitsECValue').textContent = newState.availInstalledUnitsECValue;
+    }
+
+    // After updating all inputs, recalculate and update displays
+    updateDisplays();
+
+    // Update the energy distribution if needed
+    // (You might need to implement this function if it doesn't exist)
+    // updateEnergyDistribution();
+}
+
+function updateParentState(newState) {
+    window.parent.postMessage({type: 'updateState', state: newState}, '*');
+}
+
+
+})();
+    </script>
+</body>
+</html>

@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>By Demand Module</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --demand-left-column-width: 25%;  /* Left column width */
+    --demand-right-column-width: 75%; /* Right column width */
+    --demand-gap-size: 1rem;          /* Gap between columns */
+    /* Other existing variables */
+    --demand-primary-color: #2c3e50;
+    --demand-secondary-color: #34495e;
+    --demand-background-color: #f5f7fa;
+    --demand-text-color: #333;
+    --demand-border-color: #bdc3c7;
+    --demand-hover-color: #3498db;
+    --demand-low-efficiency: #e74c3c;
+    --demand-medium-efficiency: #f39c12;
+    --demand-high-efficiency: #2ecc71;
+    --demand-light-blue: #e6f3ff;
+    --demand-light-green: #e6fff0;
+    --demand-light-red: #ffe6e6;
+    --demand-hydrogen-color: #e74c3c;
+    --demand-cslg-color: #2ecc71;
+    --demand-padding-medium: 15px;
+    --demand-border-radius: 8px;
+    --demand-regenerative-color: #3498db;
+    --demand-third-party-color: #e74c3c;
+    --demand-background-color: #2c3e50;
+    --demand-text-color: #ecf0f1;
+    --demand-button-color: #2980b9;
+    --demand-slider-fill-color: rgba(121, 182, 154, 0.77);
+    --demand-border-radius: 8px;
+    --demand-padding-small: 0.5rem;
+    --demand-padding-medium: 1rem;
+    --demand-handle-height: 20px;
+}
+
+        .demand-module body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            background-color: var(--demand-background-color);
+        }
+
+        .demand-module .demand-combined-module-container {
+     display: flex;
+    width: 100%;
+    height: 100vh;
+    gap: var(--demand-gap-size); /* Consistent gap management */
+    overflow: hidden;
+}
+
+        /* Energy Demand Calculator Styles */
+        .demand-module .demand-edc-left-column {
+    flex: 0 0 calc(var(--demand-left-column-width) - var(--demand-gap-size) / 2);
+    min-width: 300px;
+    height: 100%;
+    background-color: #ffffff;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.demand-module .demand-edc-left-scroll-content {
+    padding: 10px;
+}
+
+.demand-module .demand-edc-left-scroll-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+        .demand-module .demand-edc-left-input-group {
+            background-color: var(--demand-background-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .demand-module .demand-edc-left-input-group--energy-demand {
+            background-color: var(--demand-light-blue);
+            border-bottom: 2px solid var(--demand-primary-color);
+        }
+
+        .demand-module .demand-edc-left-input-group--percentage {
+            background-color: var(--demand-light-red);
+        }
+
+        .demand-module .demand-edc-left-input-group--electricity-cost {
+            transition: background 0.3s ease;
+        }
+
+        .demand-module .demand-edc-left-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 16px;
+            color: var(--demand-primary-color);
+        }
+
+        .demand-module .demand-edc-left-input-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demand-module .demand-edc-left-input-wrapper {
+            display: inline-flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .demand-module .demand-edc-left-stepper-button {
+            width: 36px;
+            height: 36px;
+            background-color: var(--demand-primary-color);
+            color: #ffffff;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .demand-module .demand-edc-left-stepper-button:hover {
+            background-color: var(--demand-hover-color);
+        }
+
+        .demand-module .demand-edc-left-stepper-input {
+            width: 80px;
+            text-align: center;
+            border: none;
+            padding: 8px 5px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .demand-module .demand-edc-left-unit-display,
+        .demand-module .demand-edc-left-value-display {
+            font-weight: 500;
+            color: var(--demand-text-color);
+            margin-left: 10px;
+        }
+
+        .demand-module .demand-edc-left-unit-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .demand-module .demand-edc-left-unit-toggle-btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: var(--demand-primary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .demand-module .demand-edc-left-unit-toggle-btn:hover {
+            background-color: var(--demand-hover-color);
+        }
+
+        .demand-module .demand-edc-left-tooltip {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--demand-secondary-color);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: help;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .demand-module .demand-edc-left-tooltip:hover {
+            background-color: var(--demand-hover-color);
+        }
+
+        .demand-module .demand-edc-left-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background-color: var(--demand-secondary-color);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            width: 200px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: normal;
+            font-size: 12px;
+        }
+
+        .demand-module .demand-edc-left-tooltip:hover::after {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .demand-module .demand-edc-left-visual-indicator {
+            height: 4px;
+            background-color: var(--demand-medium-efficiency);
+            margin-top: 10px;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Additional Parameters Styles */
+        .demand-module .demand-ap-energy-parameter-dropdown {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .demand-module .demand-ap-dropdown-header {
+            background-color: var(--demand-primary-color);
+            color: #ffffff;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .demand-module .demand-ap-dropdown-header:hover {
+            background-color: var(--demand-secondary-color);
+        }
+
+        .demand-module .demand-ap-dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .demand-module .demand-ap-dropdown-content.show {
+            max-height: 1000px;
+        }
+
+        .demand-module .demand-ap-module-content {
+            padding: 15px;
+        }
+
+        .demand-module .demand-ap-parameter {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .demand-module .demand-ap-parameter-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--demand-primary-color);
+        }
+
+        .demand-module .demand-ap-parameter-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .demand-module .demand-ap-parameter-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demand-module .demand-ap-input-group {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .demand-module .demand-ap-stepper-button {
+            width: 32px;
+            height: 32px;
+            background-color: var(--demand-primary-color);
+            color: #ffffff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .demand-module .demand-ap-stepper-button:hover {
+            background-color: var(--demand-hover-color);
+        }
+
+        .demand-module .demand-ap-stepper-input {
+            width: 60px;
+            text-align: center;
+            border: none;
+            padding: 8px 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .demand-module .demand-ap-unit-display {
+            margin-left: 12px;
+            font-weight: 500;
+            color: var(--demand-text-color);
+            font-size: 14px;
+        }
+
+        .demand-module .demand-ap-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 15px;
+            cursor: help;
+            width: 20px;
+            height: 20px;
+            background-color: var(--demand-secondary-color);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .demand-module .demand-ap-tooltip:hover {
+            background-color: var(--demand-hover-color);
+        }
+
+        .demand-module .demand-ap-tooltip .demand-ap-tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--demand-secondary-color);
+            color: #ffffff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            right: 0;
+            margin-bottom: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: normal;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .demand-module .demand-ap-tooltip:hover .demand-ap-tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .demand-module .demand-ap-impact-indicator {
+            width: 100%;
+            height: 4px;
+            background-color: var(--demand-border-color);
+            margin-top: 12px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .demand-module .demand-ap-impact-indicator-bar {
+            height: 100%;
+            width: 50%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .demand-module .demand-ap-parameter--intake {
+            background-color: var(--demand-light-blue);
+        }
+
+        .demand-module .demand-ap-parameter--output {
+            background-color: var(--demand-light-green);
+        }
+
+        .demand-module .demand-ap-parameter--dss {
+            background-color: var(--demand-background-color);
+        }
+
+        /* Integrated Energy Distribution Module Styles */
+        .demand-module .demand-edc__right-column {
+    flex: 0 0 calc(var(--demand-right-column-width) - var(--demand-gap-size) / 2);
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    color: #ecf0f1;
+    overflow-y: auto;
+}
+
+.demand-module .demand-edc__right-scroll-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+        .demand-module .demand-edc__top-cell {
+    flex: 0 0 auto;
+    padding: var(--demand-padding-medium);
+ padding-right: 1.5rem; /* Add padding to the right side */
+}
+
+        .demand-module .demand-edc__grid {
+            display: grid;
+            grid-template-columns: 40% 30% 30%;
+            gap: var(--demand-padding-medium);
+            margin-bottom: var(--demand-padding-medium);
+            position: relative;
+ padding-right: 1.5rem; /* Add padding to the right side */
+        }
+
+        .demand-module .demand-edc__grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--demand-border-radius);
+            padding: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .demand-module .demand-edc__grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .demand-module .demand-edc__grid-image {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+        }
+
+        .demand-module .demand-edc__grid-label {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .demand-module .demand-edc__grid-item:first-child .demand-edc__grid-label {
+            color: var(--demand-hydrogen-color);
+        }
+
+        .demand-module .demand-edc__grid-item:not(:first-child) .demand-edc__grid-label {
+            color: var(--demand-cslg-color);
+        }
+
+        .demand-module .demand-edc__bottom-content {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            gap: 22%;
+        }
+
+        .demand-module .demand-edc__box {
+            border: 1px dashed #ecf0f1;
+            padding: 15px;
+            width: calc(50% - 15px);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--demand-border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .demand-module .demand-edc__row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .demand-module .demand-edc__label {
+            background: none;
+            box-shadow: none;
+            padding: 0;
+            margin: 0;
+            margin-right: 10px;
+            min-width: 120px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .demand-module .demand-edc__label::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .demand-module .demand-edc__box:first-child .demand-edc__label::before {
+            background-color: var(--demand-hydrogen-color);
+        }
+
+        .demand-module .demand-edc__box:last-child .demand-edc__label::before {
+            background-color: var(--demand-cslg-color);
+        }
+
+        .demand-module .demand-edc__value {
+            display: inline-block;
+            min-width: 80px;
+            text-align: right;
+            background-color: transparent;
+            color: #ecf0f1;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .demand-module .demand-edc__unit-display {
+            font-weight: bold;
+            margin-left: 2px;
+        }
+
+        .demand-module .demand-edc__bottom-cell {
+    flex: 1;
+    padding: var(--demand-padding-medium);
+    background-color: #34495e;
+}
+.demand-module .demand-iedm-root {
+    height: 100%;
+    overflow-y: auto;
+}
+
+
+        .demand-module .demand-iedm-module-container {
+            font-family: 'Rajdhani', Arial, sans-serif;
+            color: var(--demand-text-color);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--demand-border-radius);
+            overflow: hidden;
+            display: flex;
+            height: 100%;
+        }
+
+        .demand-module .demand-iedm-main-slider {
+            width: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            position: relative;
+            height: 100%;
+        }
+
+        .demand-module .demand-iedm-slider-bar {
+    width: 30px;
+    height: calc(100% - 40px);
+    min-height: 480px; /* Increased minimum height */
+    background-color: #95a5a6;
+    margin: 20px auto;
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 15px;
+}
+
+        .demand-module .demand-iedm-slider-handle {
+            width: 40px;
+            height: var(--demand-handle-height);
+            background-color: #fff;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: ns-resize;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .demand-module .demand-iedm-energy-sections {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .demand-module .demand-iedm-energy-section {
+            flex: 1;
+            display: flex;
+            padding: var(--demand-padding-small);
+        }
+
+        .demand-module .demand-iedm-bar-container {
+            width: 100px;
+            position: relative;
+            margin-right: var(--demand-padding-medium);
+            flex-shrink: 0;
+            padding-top: 5px;
+            height: calc(100% - var(--demand-padding-medium));
+        }
+
+        .demand-module .demand-iedm-energy-section:first-child .demand-iedm-bar-container {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .demand-module .demand-iedm-energy-section:last-child .demand-iedm-bar-container {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .demand-module .demand-iedm-increment-button {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background-color: var(--demand-button-color);
+            color: var(--demand-text-color);
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .demand-module .demand-iedm-value-box {
+            height: 80px;
+            border-radius: var(--demand-border-radius);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 2;
+            position: relative;
+            background-color: transparent;
+            margin-top: 40px;
+        }
+
+        .demand-module .demand-iedm-energy-bar {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transition: height 0.3s;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            font-size: 24px;
+            min-height: 10px;
+            padding-bottom: var(--demand-padding-medium);
+            box-sizing: border-box;
+        }
+
+        .demand-module .demand-iedm-bar-icon {
+            position: absolute;
+            bottom: 10px;
+        }
+
+        .demand-module .demand-iedm-regenerative-bar {
+            background-color: var(--demand-regenerative-color);
+        }
+
+        .demand-module .demand-iedm-third-party-bar {
+            background-color: var(--demand-third-party-color);
+        }
+
+        .demand-module .demand-iedm-content-area {
+            flex-grow: 1;
+            padding: var(--demand-padding-medium);
+            overflow-y: auto;
+            width: 0;
+            min-width: 0;
+        }
+
+        .demand-module .demand-iedm-regenerative-content {
+            display: flex;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: var(--demand-border-radius);
+        }
+
+        .demand-module .demand-iedm-regenerative-explanation,
+        .demand-module .demand-iedm-hydrogen-facts {
+            flex: 1;
+            padding: 0 var(--demand-padding-small);
+        }
+
+        .demand-module .demand-iedm-fuel-power-content {
+            color: var(--demand-text-color);
+            padding: 1.25em;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: var(--demand-border-radius);
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .demand-module .demand-iedm-fp-row {
+            display: grid;
+            grid-template-columns: minmax(15%, auto) minmax(25%, auto) minmax(25%, auto) minmax(15%, auto);
+            grid-gap: 0.5em;
+            align-items: center;
+            padding: 0.9375em 0;
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demand-module .demand-iedm-fp-row:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .demand-module .demand-iedm-fp-row-2 {
+            font-weight: normal;
+            border-bottom: 2px solid rgba(236, 240, 241, 0.2);
+            padding-bottom: 0.625em;
+            background-color: rgba(44, 62, 80, 0.7);
+        }
+
+        .demand-module .demand-iedm-fp-grid-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .demand-module .demand-iedm-fp-grid-item:nth-child(1) {
+            justify-content: flex-start;
+        }
+
+        .demand-module .demand-iedm-fp-grid-item:nth-child(2),
+        .demand-module .demand-iedm-fp-grid-item:nth-child(3) {
+            justify-content: center;
+        }
+
+        .demand-module .demand-iedm-fp-grid-item:nth-child(4) {
+            justify-content: flex-start;
+        }
+
+        .demand-module .demand-iedm-fuel-label {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .demand-module .demand-iedm-utilization-bar-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .demand-module .demand-iedm-utilization-bar {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .demand-module .demand-iedm-utilization-bar.natural-gas {
+            background-color: rgba(101, 67, 33, 0.6);
+        }
+
+        .demand-module .demand-iedm-utilization-bar.ammonia {
+            background-color: rgba(30, 144, 255, 0.6);
+        }
+
+        .demand-module .demand-iedm-utilization-bar.methanol {
+            background-color: rgba(70, 130, 180, 0.6);
+        }
+
+        .demand-module .demand-iedm-fuel-label span {
+            position: relative;
+            z-index: 2;
+            padding-left: 0.3125em;
+        }
+
+        .demand-module .demand-iedm-fp-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 6.25em;
+            margin-right: 0.3125em;
+        }
+
+        .demand-module .demand-iedm-fp-input-container input {
+            width: 100%;
+            text-align: center;
+            font-size: 1em;
+            background-color: transparent;
+            color: var(--demand-text-color);
+            border: none;
+            border-bottom: 2px solid rgba(236, 240, 241, 0.3);
+            font-weight: bold;
+            padding: 0.3125em 0;
+            -moz-appearance: textfield;
+        }
+
+        .demand-module .demand-iedm-fp-input-container input::-webkit-outer-spin-button,
+        .demand-module .demand-iedm-fp-input-container input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .demand-module .demand-iedm-fp-input-container input:focus {
+            outline: none;
+            border-color: var(--demand-regenerative-color);
+        }
+
+        .demand-module .demand-iedm-fp-input-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: absolute;
+            bottom: -0.75em;
+        }
+
+        .demand-module .demand-iedm-fp-input-control {
+            cursor: pointer;
+            user-select: none;
+            color: var(--demand-regenerative-color);
+            font-size: 1.25em;
+            font-weight: bold;
+        }
+
+        .demand-module .demand-iedm-fp-unit {
+            width: 5em;
+            text-align: left;
+            flex-shrink: 0;
+	    margin-left: 0.3125em;
+        }
+
+        @media (max-width: 768px) {
+    .demand-module .demand-combined-module-container {
+        flex-direction: column;
+        height: auto;
+        min-height: auto;
+        max-height: none;
+    }
+    .demand-module .demand-edc-left-column,
+    .demand-module .demand-edc__right-column {
+        width: 100%;
+        height: auto;
+        max-height: 50vh;
+    }
+}
+
+        .demand-module .demand-edc-left-column {
+            color: var(--demand-primary-color);
+        }
+
+        .demand-module .demand-edc-left-unit-display,
+        .demand-module .demand-edc-left-value-display,
+        .demand-module .demand-edc-left-label {
+            color: var(--demand-primary-color);
+        }
+
+        .demand-module {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="demand-module">
+        <div class="demand-combined-module-container">
+            <!-- Energy Demand Calculator (left column) -->
+            <div class="demand-edc-left-column">
+  <div class="demand-edc-left-scroll-content">
+                <div class="demand-edc-left-input-group demand-edc-left-input-group--energy-demand">
+                    <label class="demand-edc-left-label" for="demand-energyDemand">Energy Demand</label>
+                    <div class="demand-edc-left-input-content">
+                        <div class="demand-edc-left-input-wrapper">
+                            <button class="demand-edc-left-stepper-button" id="demand-energyDemandDown">-</button>
+                            <input type="text" id="demand-energyDemand" class="demand-edc-left-stepper-input" value="100 000">
+                            <button class="demand-edc-left-stepper-button" id="demand-energyDemandUp">+</button>
+                        </div>
+                        <div class="demand-edc-left-unit-toggle">
+                            <span class="demand-edc-left-unit-display demand-energy-unit" id="demand-energyDemandUnit">kWh/Day</span>
+                            <button class="demand-edc-left-unit-toggle-btn" id="demand-unitToggle">Use MWh</button>
+                        </div>
+                    </div>
+                    <div class="demand-edc-left-tooltip" data-tooltip="Total energy demand per day">?</div>
+                </div>
+                
+                <div class="demand-edc-left-input-group demand-edc-left-input-group--percentage">
+                    <label class="demand-edc-left-label" for="demand-electricity">Electricity</label>
+                    <div class="demand-edc-left-input-content">
+                        <div class="demand-edc-left-input-wrapper">
+                            <button class="demand-edc-left-stepper-button" id="demand-electricityDown">-</button>
+                            <input type="text" id="demand-electricity" class="demand-edc-left-stepper-input" value="50.0">
+                            <button class="demand-edc-left-stepper-button" id="demand-electricityUp">+</button>
+                        </div>
+                        <span class="demand-edc-left-unit-display">%</span>
+                        <span id="demand-electricityValue" class="demand-edc-left-value-display">50000</span>
+                        <span class="demand-edc-left-unit-display demand-energy-unit" id="demand-electricityUnit">kWh/Day</span>
+                    </div>
+                    <div class="demand-edc-left-tooltip" data-tooltip="Percentage of energy demand for electricity">?</div>
+                    <div class="demand-edc-left-visual-indicator" id="demand-electricityIndicator"></div>
+                </div>
+                
+                <div class="demand-edc-left-input-group demand-edc-left-input-group--percentage">
+                    <label class="demand-edc-left-label" for="demand-cooling">Cooling</label>
+                    <div class="demand-edc-left-input-content">
+                        <div class="demand-edc-left-input-wrapper">
+                            <button class="demand-edc-left-stepper-button" id="demand-coolingDown">-</button>
+                            <input type="text" id="demand-cooling" class="demand-edc-left-stepper-input" value="50.0">
+                            <button class="demand-edc-left-stepper-button" id="demand-coolingUp">+</button>
+                        </div>
+                        <span class="demand-edc-left-unit-display">%</span>
+                        <span id="demand-coolingValue" class="demand-edc-left-value-display">50000</span>
+                        <span class="demand-edc-left-unit-display demand-energy-unit" id="demand-coolingUnit">kWh/Day</span>
+                    </div>
+                    <div class="demand-edc-left-tooltip" data-tooltip="Percentage of energy demand for cooling">?</div>
+                    <div class="demand-edc-left-visual-indicator" id="demand-coolingIndicator"></div>
+                </div>
+                
+                <div class="demand-edc-left-input-group demand-edc-left-input-group--percentage">
+                    <label class="demand-edc-left-label" for="demand-hydrogen">Hydrogen</label>
+                    <div class="demand-edc-left-input-content">
+                        <div class="demand-edc-left-input-wrapper">
+                            <button class="demand-edc-left-stepper-button" id="demand-hydrogenDown">-</button>
+                            <input type="text" id="demand-hydrogen" class="demand-edc-left-stepper-input" value="0">
+                            <button class="demand-edc-left-stepper-button" id="demand-hydrogenUp">+</button>
+                        </div>
+                        <span class="demand-edc-left-unit-display">kg/day</span>
+                    </div>
+                    <div class="demand-edc-left-tooltip" data-tooltip="Amount of hydrogen produced per day">?</div>
+                </div>
+                    
+                <div class="demand-edc-left-input-group demand-edc-left-input-group--electricity-cost">
+                    <label class="demand-edc-left-label" for="demand-electricityCost">[Purchased] Electricity Cost</label>
+                    <div class="demand-edc-left-input-content">
+                        <div class="demand-edc-left-input-wrapper">
+                            <button class="demand-edc-left-stepper-button" id="demand-electricityCostDown">-</button>
+                            <input type="text" id="demand-electricityCost" class="demand-edc-left-stepper-input" value="0.010">
+                            <button class="demand-edc-left-stepper-button" id="demand-electricityCostUp">+</button>
+                        </div>
+                        <span class="demand-edc-left-unit-display">$/kWh</span>
+                    </div>
+                    <div class="demand-edc-left-tooltip" data-tooltip="Cost of purchased electricity per kWh">?</div>
+                </div>
+
+                <div class="demand-ap-energy-parameter-dropdown">
+                    <div class="demand-ap-dropdown-header" id="demand-apDropdownHeader">
+                        <span>Additional Parameters</span>
+                        <span class="demand-ap-dropdown-arrow">▼</span>
+                    </div>
+                    <div class="demand-ap-dropdown-content" id="demand-apDropdownContent">
+                        <div class="demand-ap-module-content">
+                            <div class="demand-ap-parameter demand-ap-parameter--intake">
+                                <div class="demand-ap-parameter-label">
+                                    <span class="demand-ap-parameter-icon">⏱️</span>
+                                    Intake Hours
+                                </div>
+                                <div class="demand-ap-parameter-content">
+                                    <div class="demand-ap-input-group">
+                                        <button class="demand-ap-stepper-button" data-action="decrement" aria-label="Decrease Intake Hours">-</button>
+                                        <input type="text" id="demand-intakeHours" class="demand-ap-stepper-input" value="12.0" data-param="intakeHours" aria-label="Intake Hours">
+                                        <button class="demand-ap-stepper-button" data-action="increment" aria-label="Increase Intake Hours">+</button>
+                                    </div>
+                                    <span class="demand-ap-unit-display">hours</span>
+                                    <div class="demand-ap-tooltip">?
+                                        <span class="demand-ap-tooltiptext">The number of hours per day during which the GenBox system takes in energy from the grid or renewable sources.</span>
+                                    </div>
+                                </div>
+                                <div class="demand-ap-impact-indicator">
+                                    <div class="demand-ap-impact-indicator-bar" id="demand-intakeHoursImpact"></div>
+                                </div>
+                            </div>
+                            <div class="demand-ap-parameter demand-ap-parameter--intake">
+                                <div class="demand-ap-parameter-label">
+                                    <span class="demand-ap-parameter-icon">📈</span>
+                                    Intake OP-P Factor
+                                </div>
+                                <div class="demand-ap-parameter-content">
+                                    <div class="demand-ap-input-group">
+                                        <button class="demand-ap-stepper-button" data-action="decrement" aria-label="Decrease Intake OP-P Factor">-</button>
+                                        <input type="text" id="demand-intakeOPPFactor" class="demand-ap-stepper-input" value="1.5" data-param="intakeOPPFactor" aria-label="Intake OP-P Factor">
+                                        <button class="demand-ap-stepper-button" data-action="increment" aria-label="Increase Intake OP-P Factor">+</button>
+                                    </div>
+                                    <div class="demand-ap-tooltip">?
+                                        <span class="demand-ap-tooltiptext">Intake Off-Peak to Peak Difference Factor. Quantifies the fluctuation in available intermittent energy.</span>
+                                    </div>
+                                </div>
+                                <div class="demand-ap-impact-indicator">
+                                    <div class="demand-ap-impact-indicator-bar" id="demand-intakeOPPFactorImpact"></div>
+                                </div>
+                            </div>
+                            <div class="demand-ap-parameter demand-ap-parameter--output">
+                                <div class="demand-ap-parameter-label">
+                                    <span class="demand-ap-parameter-icon">⏱️</span>
+                                    Output Hours
+                                </div>
+                                <div class="demand-ap-parameter-content">
+                                    <div class="demand-ap-input-group">
+                                        <button class="demand-ap-stepper-button" data-action="decrement" aria-label="Decrease Output Hours">-</button>
+                                        <input type="text" id="demand-outputHours" class="demand-ap-stepper-input" value="24.0" data-param="outputHours" aria-label="Output Hours">
+                                        <button class="demand-ap-stepper-button" data-action="increment" aria-label="Increase Output Hours">+</button>
+                                    </div>
+                                    <span class="demand-ap-unit-display">hours</span>
+                                    <div class="demand-ap-tooltip">?
+                                        <span class="demand-ap-tooltiptext">The number of hours per day during which the GenBox system provides energy output.</span>
+                                    </div>
+                                </div>
+                                <div class="demand-ap-impact-indicator">
+                                    <div class="demand-ap-impact-indicator-bar" id="demand-outputHoursImpact"></div>
+                                </div>
+                            </div>
+                            <div class="demand-ap-parameter demand-ap-parameter--output">
+                                <div class="demand-ap-parameter-label">
+                                    <span class="demand-ap-parameter-icon">📉</span>
+                                    Output OP-P Factor
+                                </div>
+                                <div class="demand-ap-parameter-content">
+                                    <div class="demand-ap-input-group">
+                                        <button class="demand-ap-stepper-button" data-action="decrement" aria-label="Decrease Output OP-P Factor">-</button>
+                                        <input type="text" id="demand-outputOPPFactor" class="demand-ap-stepper-input" value="1.5" data-param="outputOPPFactor" aria-label="Output OP-P Factor">
+                                        <button class="demand-ap-stepper-button" data-action="increment" aria-label="Increase Output OP-P Factor">+</button>
+                                    </div>
+                                    <div class="demand-ap-tooltip">?
+                                        <span class="demand-ap-tooltiptext">Output Off-Peak to Peak Difference Factor. Measures the variation in energy demand throughout the day.</span>
+                                    </div>
+                                </div>
+                                <div class="demand-ap-impact-indicator">
+                                    <div class="demand-ap-impact-indicator-bar" id="demand-outputOPPFactorImpact"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integrated Energy Distribution Module (right column) -->
+        <div class="demand-edc__right-column">
+            <div class="demand-edc__right-scroll-content">
+        <div class="demand-edc__top-cell">
+            <div class="demand-edc__grid" role="group" aria-label="Energy Type Visuals">
+                <div class="demand-edc__grid-item">
+                    <img src="Images/HydrogenGenerator.png" alt="Hydrogen Generator" class="demand-edc__grid-image">
+                    <div class="demand-edc__grid-label">Hydrogen</div>
+                </div>
+                <div class="demand-edc__grid-item">
+                    <img src="Images/CslgElectricity.png" alt="Electricity" class="demand-edc__grid-image">
+                    <div class="demand-edc__grid-label">Electricity</div>
+                </div>
+                <div class="demand-edc__grid-item">
+                    <img src="Images/CslgAC.png" alt="Cooling" class="demand-edc__grid-image">
+                    <div class="demand-edc__grid-label">Cooling</div>
+                </div>
+            </div>
+            
+            <div class="demand-edc__bottom-content">
+                <div class="demand-edc__box">
+                    <div class="demand-edc__row">
+                        <span class="demand-edc__label">Efficiency:</span>
+                        <span id="demand-efficiencyHValue" class="demand-edc__value">94</span>
+                        <span class="demand-edc__unit-display">%</span>
+                    </div>
+                    <div class="demand-edc__row">
+                        <span class="demand-edc__label">Installed Effect:</span>
+                        <span id="demand-installedEffectHValue" class="demand-edc__value">0</span>
+                        <span id="demand-installedEffectHUnit" class="demand-edc__unit-display">kW</span>
+                    </div>
+                    <div class="demand-edc__row">
+                        <span class="demand-edc__label">Installed Units:</span>
+                        <span id="demand-installedUnitsHValue" class="demand-edc__value">0</span>
+                    </div>
+                </div>
+                <div class="demand-edc__box">
+                    <div class="demand-edc__row">
+                        <span class="demand-edc__label">Cogeneration Efficiency:</span>
+                        <span id="demand-efficiencyECValue" class="demand-edc__value">85</span>
+                        <span class="demand-edc__unit-display">%</span>
+                    </div>
+                    <div class="demand-edc__row">
+                        <span class="demand-edc__label">Installed Effect:</span>
+                        <span id="demand-installedEffectECValue" class="demand-edc__value">100000</span>
+                        <span id="demand-installedEffectECUnit" class="demand-edc__unit-display">kW</span>
+                    </div>
+                    <div class="demand-edc__row">
+                        <span class="demand-edc__label">Installed Units:</span>
+                        <span id="demand-installedUnitsECValue" class="demand-edc__value">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demand-edc__bottom-cell">
+            <div class="demand-iedm-root">
+                <div class="demand-iedm-module-container">
+                    <div class="demand-iedm-main-slider">
+                        <div class="demand-iedm-slider-bar">
+                            <div class="demand-iedm-slider-handle" id="demand-iedm-main-handle" style="z-index: 5;"></div>
+                        </div>
+                    </div>
+                    <div class="demand-iedm-energy-sections">
+                        <div class="demand-iedm-energy-section">
+                            <div class="demand-iedm-bar-container">
+                                <button class="demand-iedm-increment-button" data-target="regenerative">+</button>
+                                <div class="demand-iedm-value-box" id="demand-iedm-regenerative-values">
+                                    <div class="demand-iedm-percentage" id="demand-regenerativePercentage">50.0%</div>
+                                    <div class="demand-iedm-energy-value" id="demand-regenerativeEnergyValue">50,000 kWh</div>
+                                </div>
+                                <div class="demand-iedm-energy-bar demand-iedm-regenerative-bar" style="height: 50%;">
+                                    <span class="demand-iedm-bar-icon">🍃</span>
+                                </div>
+                            </div>
+                            <div class="demand-iedm-content-area">
+                                <div class="demand-iedm-regenerative-content">
+                                    <div class="demand-iedm-regenerative-explanation">
+                                        <h3>🍃 Regenerative Energy</h3>
+                                        <p>All energy, including hydrogen, is generated using only electricity from renewable or off-peak sources.</p>
+                                    </div>
+                                    <div class="demand-iedm-hydrogen-facts">
+                                        <h3>💡 Did You Know?</h3>
+                                        <ul>
+                                            <li>Hydrogen is the most abundant element in the universe.</li>
+                                            <li>When used in fuel cells, hydrogen produces only water as a byproduct.</li>
+                                            <li>Hydrogen can be produced through electrolysis using renewable energy sources.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demand-iedm-energy-section">
+                            <div class="demand-iedm-bar-container">
+                                <button class="demand-iedm-increment-button" data-target="third-party">+</button>
+                                <div class="demand-iedm-value-box" id="demand-iedm-third-party-values">
+                                    <div class="demand-iedm-percentage" id="demand-thirdPartyPercentage">50.0%</div>
+                                    <div class="demand-iedm-energy-value" id="demand-thirdPartyEnergyValue">50,000 kWh</div>
+                                </div>
+                                <div class="demand-iedm-energy-bar demand-iedm-third-party-bar" style="height: 50%;">
+                                    <span class="demand-iedm-bar-icon">🏭</span>
+                                </div>
+                            </div>
+                            <div class="demand-iedm-content-area">
+                                <div class="demand-iedm-fuel-power-content">
+                                    <div id="demand-iedm-thirdPartyFuelsSection">
+                                        <div class="demand-iedm-fp-row demand-iedm-fp-row-2">
+                                            <div class="demand-iedm-fp-grid-item section-header">
+                                                <span class="section-icon">🏭</span>
+                                                <h3>Third Party Fuels [TPFs]</h3>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">Utilization</div>
+                                            <div class="demand-iedm-fp-grid-item">Price</div>
+                                            <div class="demand-iedm-fp-grid-item">Energy Content</div>
+                                        </div>
+                                        <div class="demand-iedm-fp-row demand-iedm-fp-row-3">
+                                            <div class="demand-iedm-fp-grid-item demand-iedm-fuel-label">
+                                                <div class="demand-iedm-utilization-bar-container">
+                                                    <div class="demand-iedm-utilization-bar natural-gas" style="width: 100%;"></div>
+                                                </div>
+                                                <span>Natural Gas</span>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">
+                                                <div class="demand-iedm-fp-input-container">
+                                                    <input id="demand-iedm-utilizationGas" type="number" min="0" max="100" value="100" step="1">
+                                                    <div class="demand-iedm-fp-input-controls">
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-utilizationGas" data-direction="decrease"><</span>
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-utilizationGas" data-direction="increase">></span>
+                                                    </div>
+                                                </div>
+                                                <div class="demand-iedm-fp-unit">% of TPFs</div>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">
+                                                <div class="demand-iedm-fp-input-container">
+                                                    <input id="demand-iedm-priceGas" type="number" min="0" step="0.5" value="100">
+                                                    <div class="demand-iedm-fp-input-controls">
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-priceGas" data-direction="decrease"><</span>
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-priceGas" data-direction="increase">></span>
+                                                    </div>
+                                                </div>
+                                                <div class="demand-iedm-fp-unit">$/1 000m³</div>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">10.41 kWh/m³</div>
+                                        </div>
+                                        <div class="demand-iedm-fp-row demand-iedm-fp-row-4">
+                                            <div class="demand-iedm-fp-grid-item demand-iedm-fuel-label">
+                                                <div class="demand-iedm-utilization-bar-container">
+                                                    <div class="demand-iedm-utilization-bar ammonia" style="width: 0%;"></div>
+                                                </div>
+                                                <span>Ammonia</span>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">
+                                                <div class="demand-iedm-fp-input-container">
+                                                    <input id="demand-iedm-utilizationAmmonia" type="number" min="0" max="100" value="0" step="1">
+                                                    <div class="demand-iedm-fp-input-controls">
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-utilizationAmmonia" data-direction="decrease"><</span>
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-utilizationAmmonia" data-direction="increase">></span>
+                                                    </div>
+                                                </div>
+                                                <div class="demand-iedm-fp-unit">% of TPFs</div>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">
+                                                <div class="demand-iedm-fp-input-container">
+                                                    <input id="demand-iedm-priceAmmonia" type="number" min="0" step="0.005" value="0.440">
+                                                    <div class="demand-iedm-fp-input-controls">
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-priceAmmonia" data-direction="decrease"><</span>
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-priceAmmonia" data-direction="increase">></span>
+                                                    </div>
+                                                </div>
+                                                <div class="demand-iedm-fp-unit">$/kg</div>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">5.1 kWh/kg</div>
+                                        </div>
+                                        <div class="demand-iedm-fp-row demand-iedm-fp-row-5">
+                                            <div class="demand-iedm-fp-grid-item demand-iedm-fuel-label">
+                                                <div class="demand-iedm-utilization-bar-container">
+                                                    <div class="demand-iedm-utilization-bar methanol" style="width: 0%;"></div>
+                                                </div>
+                                                <span>Methanol</span>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">
+                                                <div class="demand-iedm-fp-input-container">
+                                                    <input id="demand-iedm-utilizationMethanol" type="number" min="0" max="100" value="0" step="1">
+                                                    <div class="demand-iedm-fp-input-controls">
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-utilizationMethanol" data-direction="decrease"><</span>
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-utilizationMethanol" data-direction="increase">></span>
+                                                    </div>
+                                                </div>
+                                                <div class="demand-iedm-fp-unit">% of TPFs</div>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">
+                                                <div class="demand-iedm-fp-input-container">
+                                                    <input id="demand-iedm-priceMethanol" type="number" min="0" step="0.005" value="0.380">
+                                                    <div class="demand-iedm-fp-input-controls">
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-priceMethanol" data-direction="decrease"><</span>
+                                                        <span class="demand-iedm-fp-input-control" data-input="demand-iedm-priceMethanol" data-direction="increase">></span>
+                                                    </div>
+                                                </div>
+                                                <div class="demand-iedm-fp-unit">$/kg</div>
+                                            </div>
+                                            <div class="demand-iedm-fp-grid-item">5.35 kWh/kg</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+// Demand Module JavaScript
+// Demand Module JavaScript
+// Demand Module JavaScript
+const DemandUnifiedEnergyModule = (function() {
+    'use strict';
+    let iedmMainHandle, regenerativeBar, thirdPartyBar, regenerativeValues, thirdPartyValues, incrementButtons;
+    let isDragging = false;
+    let startY, startPercentage;
+
+    function initializeElements() {
+        iedmMainHandle = document.getElementById('demand-iedm-main-handle');
+        regenerativeBar = document.querySelector('.demand-iedm-regenerative-bar');
+        thirdPartyBar = document.querySelector('.demand-iedm-third-party-bar');
+        regenerativeValues = document.getElementById('demand-iedm-regenerative-values');
+        thirdPartyValues = document.getElementById('demand-iedm-third-party-values');
+        incrementButtons = document.querySelectorAll('.demand-iedm-increment-button');
+
+        if (!iedmMainHandle || !regenerativeBar || !thirdPartyBar || !regenerativeValues || !thirdPartyValues) {
+            console.error('Required elements not found. Module initialization aborted.');
+            return false;
+        }
+        return true;
+    }
+
+    function updateEnergyValues() {
+        const regenerativePercentage = parseFloat(document.getElementById('demand-regenerativePercentage').textContent);
+        const thirdPartyPercentage = 100 - regenerativePercentage;
+        const totalEnergy = demandEnergyDemandKWh * (demandIsKWh ? 1 : 0.001);
+        const unit = demandIsKWh ? 'kWh' : 'MWh';
+
+        const regenerativeEnergy = (regenerativePercentage / 100) * totalEnergy;
+        const thirdPartyEnergy = (thirdPartyPercentage / 100) * totalEnergy;
+
+        document.getElementById('demand-regenerativeEnergyValue').textContent = `${demandFormatNumber(regenerativeEnergy, demandIsKWh ? 0 : 2)} ${unit}`;
+        document.getElementById('demand-thirdPartyEnergyValue').textContent = `${demandFormatNumber(thirdPartyEnergy, demandIsKWh ? 0 : 2)} ${unit}`;
+    }
+
+    function setBarHeights(regenerativePercentage) {
+        regenerativePercentage = Math.round(regenerativePercentage * 2) / 2;
+        regenerativePercentage = Math.max(0, Math.min(100, regenerativePercentage));
+        const thirdPartyPercentage = 100 - regenerativePercentage;
+        
+        const minHeightPercentage = 2;
+        const paddingBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--demand-padding-medium'));
+        
+        regenerativeBar.style.height = `calc(${Math.max(minHeightPercentage, regenerativePercentage)}% + ${paddingBottom}px)`;
+        thirdPartyBar.style.height = `calc(${Math.max(minHeightPercentage, thirdPartyPercentage)}% + ${paddingBottom}px)`;
+        
+        document.getElementById('demand-regenerativePercentage').textContent = `${regenerativePercentage.toFixed(1)}%`;
+        document.getElementById('demand-thirdPartyPercentage').textContent = `${thirdPartyPercentage.toFixed(1)}%`;
+
+        updateEnergyValues();
+        updateSliderHandle(regenerativePercentage);
+        demandUpdateDisplays();
+    }
+
+    function updateSliderHandle(percentage) {
+        const sliderBar = iedmMainHandle.closest('.demand-iedm-slider-bar');
+        const sliderHeight = sliderBar.offsetHeight;
+        const handleHeight = iedmMainHandle.offsetHeight;
+        const maxTop = sliderHeight - handleHeight;
+        const handlePosition = Math.max(0, Math.min(maxTop, maxTop * (1 - percentage / 100)));
+        iedmMainHandle.style.top = `${handlePosition}px`;
+    }
+
+    function startDragging(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        startY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+        const sliderBar = iedmMainHandle.closest('.demand-iedm-slider-bar');
+        const sliderRect = sliderBar.getBoundingClientRect();
+        const handleRect = iedmMainHandle.getBoundingClientRect();
+        startPercentage = 100 - ((handleRect.top + handleRect.height / 2 - sliderRect.top) / sliderRect.height) * 100;
+        const sliderContainer = iedmMainHandle.closest('.demand-iedm-module-container');
+        sliderContainer.addEventListener('mousemove', onMove);
+        sliderContainer.addEventListener('touchmove', onMove);
+        window.addEventListener('mouseup', stopDragging);
+        window.addEventListener('touchend', stopDragging);
+    }
+
+    function onMove(e) {
+        if (!isDragging) return;
+        if (e.type === 'mousemove' && e.buttons === 0) {
+            stopDragging();
+            return;
+        }
+        const currentY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+        const sliderBar = iedmMainHandle.closest('.demand-iedm-slider-bar');
+        const sliderRect = sliderBar.getBoundingClientRect();
+        const handleHeight = iedmMainHandle.offsetHeight;
+        const newY = Math.max(sliderRect.top, Math.min(sliderRect.bottom - handleHeight, currentY - handleHeight / 2));
+        const newPercentage = 100 - ((newY - sliderRect.top) / (sliderRect.height - handleHeight)) * 100;
+        setBarHeights(newPercentage);
+    }
+
+    function stopDragging() {
+        const sliderContainer = iedmMainHandle.closest('.demand-iedm-module-container');
+        sliderContainer.removeEventListener('mousemove', onMove);
+        sliderContainer.removeEventListener('touchmove', onMove);
+        window.removeEventListener('mouseup', stopDragging);
+        window.removeEventListener('touchend', stopDragging);
+        isDragging = false;
+    }
+
+    function startIncrementing(target) {
+let intervalId;
+        let incrementStartTime = Date.now();
+        let accelerationFactor = 1;
+        
+        function incrementValue() {
+            const holdDuration = Date.now() - incrementStartTime;
+            if (holdDuration > 1000) {
+                accelerationFactor = Math.min(5, 1 + Math.floor(holdDuration / 1000));
+            }
+            
+            const currentPercentage = parseFloat(document.getElementById('demand-regenerativePercentage').textContent);
+            const increment = (target === 'regenerative' ? 0.5 : -0.5) * accelerationFactor;
+            const newPercentage = Math.max(0, Math.min(100, currentPercentage + increment));
+            setBarHeights(newPercentage);
+        }
+        
+        incrementValue();
+        intervalId = setInterval(incrementValue, 100);
+        
+        return () => {
+            clearInterval(intervalId);
+        };
+    }
+
+    function initializeSlider() {
+        const sliderBar = iedmMainHandle.closest('.demand-iedm-slider-bar');
+        const container = sliderBar.closest('.demand-iedm-module-container');
+        
+        container.style.minHeight = '500px';
+        sliderBar.style.height = '100%';
+        
+        const initialPercentage = parseFloat(document.getElementById('demand-regenerativePercentage').textContent);
+        
+        setBarHeights(initialPercentage);
+    }
+
+    function addEventListeners() {
+        incrementButtons.forEach(button => {
+            let stopIncrementing;
+            button.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                const target = button.dataset.target;
+                stopIncrementing = startIncrementing(target);
+            });
+            button.addEventListener('mouseup', () => {
+                if (stopIncrementing) stopIncrementing();
+            });
+            button.addEventListener('mouseleave', () => {
+                if (stopIncrementing) stopIncrementing();
+            });
+            
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const target = button.dataset.target;
+                stopIncrementing = startIncrementing(target);
+            });
+            button.addEventListener('touchend', () => {
+                if (stopIncrementing) stopIncrementing();
+            });
+        });
+
+        iedmMainHandle.addEventListener('mousedown', startDragging);
+        iedmMainHandle.addEventListener('touchstart', startDragging);
+    }
+
+    function init() {
+        if (initializeElements()) {
+            initializeSlider();
+            addEventListeners();
+            window.setTimeout(setInitialHandlePosition, 100);
+        }
+    }
+
+    function setInitialHandlePosition() {
+        const regenerativePercentage = parseFloat(document.getElementById('demand-regenerativePercentage').textContent);
+        updateSliderHandle(regenerativePercentage);
+    }
+
+    return {
+        init,
+        setBarHeights,
+        updateEnergyValues
+    };
+})();
+
+const DemandFuelPowerModule = (function() {
+    let intervalId = null;
+
+    function changeValue(inputId, increment, isPrice = false) {
+        const input = document.getElementById(inputId);
+        const step = parseFloat(input.step);
+        const currentValue = parseFloat(input.value);
+        const newValue = currentValue + increment;
+        const minValue = parseFloat(input.min);
+        const maxValue = isPrice ? Number.POSITIVE_INFINITY : parseFloat(input.max);
+
+        if (newValue >= minValue && newValue <= maxValue) {
+            input.value = newValue.toFixed(step < 1 ? step.toString().split('.')[1].length : 0);
+            if (isPrice) {
+                handlePriceInput({ target: input });
+            } else {
+                handleValueChange(inputId, newValue - currentValue);
+            }
+        }
+    }
+
+    function handleValueChange(changedInputId, change) {
+        const naturalGasInput = document.getElementById('demand-iedm-utilizationGas');
+        const ammoniaInput = document.getElementById('demand-iedm-utilizationAmmonia');
+        const methanolInput = document.getElementById('demand-iedm-utilizationMethanol');
+
+        const naturalGasValue = parseInt(naturalGasInput.value, 10);
+        const ammoniaValue = parseInt(ammoniaInput.value, 10);
+        const methanolValue = parseInt(methanolInput.value, 10);
+
+        let total = naturalGasValue + ammoniaValue + methanolValue;
+
+        if (total !== 100) {
+            const diff = 100 - total;
+            if (changedInputId === 'demand-iedm-utilizationGas') {
+                adjustNeighborValues(ammoniaInput, methanolInput, diff);
+            } else if (changedInputId === 'demand-iedm-utilizationAmmonia') {
+                adjustNeighborValues(naturalGasInput, methanolInput, diff);
+            } else if (changedInputId === 'demand-iedm-utilizationMethanol') {
+                adjustNeighborValues(naturalGasInput, ammoniaInput, diff);
+            }
+        }
+
+        updateUtilizationBars();
+        demandUpdateDisplays();
+    }
+
+    function adjustNeighborValues(input1, input2, diff) {
+        const value1 = parseInt(input1.value, 10);
+        const value2 = parseInt(input2.value, 10);
+        const totalNeighborValue = value1 + value2;
+
+        if (diff > 0) {
+            if (value1 + diff <= 100) {
+                input1.value = value1 + diff;
+            } else {
+                input1.value = 100;
+                input2.value = totalNeighborValue + diff - 100;
+            }
+        } else {
+            if (value2 + diff >= 0) {
+                input2.value = value2 + diff;
+            } else {
+                input2.value = 0;
+                input1.value = totalNeighborValue + diff;
+            }
+        }
+    }
+
+    function handleManualInput(event) {
+        const inputId = event.target.id;
+        const inputElement = event.target;
+        const inputValue = parseFloat(inputElement.value);
+        const maxValue = parseFloat(inputElement.max);
+
+        if (inputValue < 0) {
+            inputElement.value = 0;
+        } else if (inputValue > maxValue) {
+            inputElement.value = maxValue;
+        }
+        const change = inputValue - parseFloat(inputElement.defaultValue);
+        inputElement.defaultValue = inputValue;
+        handleValueChange(inputId, change);
+    }
+
+    function handlePriceInput(event) {
+        const value = parseFloat(event.target.value);
+        if (isNaN(value) || value < 0) {
+            event.target.value = 0;
+        }
+        const step = parseFloat(event.target.step);
+        event.target.value = value.toFixed(step.toString().split('.')[1].length);
+        demandUpdateDisplays();
+    }
+
+    function validateInput(input) {
+        if (input.value === '') {
+            input.value = 0;
+        }
+    }
+
+    function updateUtilizationBars() {
+        const naturalGasValue = parseInt(document.getElementById('demand-iedm-utilizationGas').value, 10);
+        const ammoniaValue = parseInt(document.getElementById('demand-iedm-utilizationAmmonia').value, 10);
+        const methanolValue = parseInt(document.getElementById('demand-iedm-utilizationMethanol').value, 10);
+
+        document.querySelector('.demand-iedm-utilization-bar.natural-gas').style.width = naturalGasValue + '%';
+        document.querySelector('.demand-iedm-utilization-bar.ammonia').style.width = ammoniaValue + '%';
+        document.querySelector('.demand-iedm-utilization-bar.methanol').style.width = methanolValue + '%';
+    }
+
+    function startIncrementing(inputId, direction) {
+        const isPrice = inputId.startsWith('demand-iedm-price');
+        const increment = direction === 'increase' ? 1 : -1;
+        
+        changeValue(inputId, increment * (isPrice ? parseFloat(document.getElementById(inputId).step) : 1), isPrice);
+        
+        intervalId = setInterval(() => {
+            changeValue(inputId, increment * (isPrice ? parseFloat(document.getElementById(inputId).step) : 1), isPrice);
+        }, 100);
+    }
+
+    function stopIncrementing() {
+        clearInterval(intervalId);
+    }
+
+    function addEventListeners() {
+        const inputs = document.querySelectorAll('.demand-iedm-fp-input-container input');
+        inputs.forEach(input => {
+            input.addEventListener('input', handleManualInput);
+            input.addEventListener('blur', () => validateInput(input));
+        });
+
+        const controls = document.querySelectorAll('.demand-iedm-fp-input-control');
+        controls.forEach(control => {
+            const inputId = control.getAttribute('data-input');
+            const direction = control.getAttribute('data-direction');
+
+            control.addEventListener('mousedown', function() {
+                startIncrementing(inputId, direction);
+            });
+
+            control.addEventListener('mouseup', stopIncrementing);
+            control.addEventListener('mouseleave', stopIncrementing);
+        });
+    }
+
+    function init() {
+        updateUtilizationBars();
+        addEventListeners();
+    }
+
+    return {
+        init
+    };
+})();
+
+let demandIsKWh = true;
+let demandEnergyDemandStep = 500;
+let demandElectricityCoolingStep = 0.5;
+let demandEnergyDemandKWh = 100000; // Store energy demand in kWh
+
+function demandFormatNumber(number, decimalPlaces = 0, forceDecimals = false) {
+    const formatted = number.toFixed(decimalPlaces);
+    if (forceDecimals) {
+        return formatted.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+    return parseFloat(formatted).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+function demandParseFormattedNumber(str) {
+    return parseFloat(str.replace(/\s/g, ''));
+}
+
+function demandUpdateElectricityCostBackground(value) {
+    const minValue = 0.010;
+    const orangeThreshold = 0.050;
+    const redThreshold = 0.100;
+
+    let backgroundColor;
+
+    if (value <= orangeThreshold) {
+        const percentage = (value - minValue) / (orangeThreshold - minValue);
+        backgroundColor = `linear-gradient(to right, #4CAF50 ${(1 - percentage) * 100}%, #FFA500 ${percentage * 100}%)`;
+    } else if (value <= redThreshold) {
+        const percentage = (value - orangeThreshold) / (redThreshold - orangeThreshold);
+        backgroundColor = `linear-gradient(to right, #FFA500 ${(1 - percentage) * 100}%, #FF0000 ${percentage * 100}%)`;
+    } else {
+        backgroundColor = '#FF0000';
+    }
+
+    document.querySelector('.demand-edc-left-input-group--electricity-cost').style.background = backgroundColor;
+}
+
+function demandCalculateCogenerationEfficiency(A, B) {
+    if (Math.round(A + B) !== 100) {
+        console.error("The sum of electricity and cooling must be 100");
+        return 85; // Default value in case of error
+    }
+    let C;
+    if (A === 50 && B === 50) {
+        C = 85;
+    } else if (B === 0) {
+        C = 60;
+    } else if (B === 100) {
+        C = 75;
+    } else {
+        if (B > 50) {
+            C = 85 - (10 * (B - 50) / 50); // Decrease linearly from 85 to 75
+        } else {
+            C = 60 + (25 * Math.min(A, B) / 50); // Interpolation from 60 to 85
+        }
+    }
+    return Math.round(C * 10) / 10; // Round to one decimal place
+}
+
+function demandCalculateInstalledEffectHValue() {
+    let energyDemand = demandParseFormattedNumber(document.getElementById('demand-energyDemand').value);
+    if (!demandIsKWh) {
+        energyDemand *= 1000; // Convert MWh to kWh for calculation
+    }
+    
+    const regenerativePercentage = parseFloat(document.getElementById('demand-regenerativePercentage').textContent) / 100;
+    const efficiencyHValue = parseFloat(document.getElementById('demand-efficiencyHValue').textContent) / 100;
+    const efficiencyECValue = parseFloat(document.getElementById('demand-efficiencyECValue').textContent) / 100;
+    
+    const hydrogen = demandParseFormattedNumber(document.getElementById('demand-hydrogen').value);
+    const intakeOPPFactor = parseFloat(document.getElementById('demand-intakeOPPFactor').value);
+    const intakeHours = parseFloat(document.getElementById('demand-intakeHours').value);
+
+    // Corrected calculation
+    let result = ((energyDemand * regenerativePercentage) / (efficiencyHValue * efficiencyECValue)) + ((hydrogen * 33.33) / efficiencyHValue);
+    result *= intakeOPPFactor;
+    result /= intakeHours;
+    
+    // Ensure minimum 50kW if there's hydrogen demand
+    if (hydrogen > 0 && result < 50) {
+        result = 50;
+    }
+
+    return result; // Always return the value in kW
+}
+
+function demandUpdateDisplays() {
+    const electricityPercentage = demandParseFormattedNumber(document.getElementById('demand-electricity').value);
+    const coolingPercentage = demandParseFormattedNumber(document.getElementById('demand-cooling').value);
+
+    let electricityValue = (demandEnergyDemandKWh * electricityPercentage) / 100;
+    let coolingValue = (demandEnergyDemandKWh * coolingPercentage) / 100;
+
+    const decimalPlaces = demandIsKWh ? 0 : 2;
+    const displayValue = demandIsKWh ? 1 : 0.001;
+
+    document.getElementById('demand-electricityValue').textContent = demandFormatNumber(electricityValue * displayValue, decimalPlaces);
+    document.getElementById('demand-coolingValue').textContent = demandFormatNumber(coolingValue * displayValue, decimalPlaces);
+
+    document.getElementById('demand-electricity').value = demandFormatNumber(electricityPercentage, 1);
+    document.getElementById('demand-cooling').value = demandFormatNumber(coolingPercentage, 1);
+
+    document.getElementById('demand-electricityIndicator').style.width = `${electricityPercentage}%`;
+    document.getElementById('demand-coolingIndicator').style.width = `${coolingPercentage}%`;
+
+    document.getElementById('demand-energyDemand').value = demandFormatNumber(demandEnergyDemandKWh * displayValue, demandIsKWh ? 0 : 2);
+
+    // Update regenerative and third-party energy values
+    DemandUnifiedEnergyModule.updateEnergyValues();
+
+    const electricityCost = demandParseFormattedNumber(document.getElementById('demand-electricityCost').value);
+    demandUpdateElectricityCostBackground(electricityCost);
+
+    // Update Installed Effect H values
+    const installedEffectHValueKW = demandCalculateInstalledEffectHValue();
+    document.getElementById('demand-installedEffectHValue').textContent = demandFormatNumber(
+        demandIsKWh ? installedEffectHValueKW : installedEffectHValueKW / 1000,
+        demandIsKWh ? 0 : 2,
+        !demandIsKWh
+    );
+    const hydrogenDemand = demandParseFormattedNumber(document.getElementById('demand-hydrogen').value);
+    const energyDemand = demandParseFormattedNumber(document.getElementById('demand-energyDemand').value);
+    const installedUnitsHValue = (hydrogenDemand > 0 || energyDemand > 0) ? Math.max(1, Math.round(installedEffectHValueKW / 50)) : 0;
+    document.getElementById('demand-installedUnitsHValue').textContent = installedUnitsHValue;
+
+    // Calculate Installed Effect EC Value in kW
+    const outputOPPFactor = parseFloat(document.getElementById('demand-outputOPPFactor').value);
+    const outputHours = parseFloat(document.getElementById('demand-outputHours').value);
+
+    // Always calculate in kW
+    const installedEffectECKW = (energyDemand * (demandIsKWh ? 1 : 1000) * outputOPPFactor) / outputHours;
+
+    const installedEffectECValue = document.getElementById('demand-installedEffectECValue');
+
+    // Convert to MW only if demandIsKWh is false
+    const installedEffectECDisplay = demandIsKWh ? installedEffectECKW : installedEffectECKW / 1000;
+
+    // Display Installed Effect EC Value
+    installedEffectECValue.textContent = demandFormatNumber(installedEffectECDisplay, demandIsKWh ? 0 : 2);
+
+    // Update the unit display
+    document.getElementById('demand-installedEffectECUnit').textContent = demandIsKWh ? 'kW' : 'MW';
+
+    // Calculate and display Installed Units EC Value (always based on kW)
+    const installedUnitsECValue = Math.round(installedEffectECKW / 100);
+    document.getElementById('demand-installedUnitsECValue').textContent = installedUnitsECValue;
+
+    // Update parent state
+    updateParentState({
+        demand: demandEnergyDemandKWh,
+        regenerativeEnergyValue: parseFloat(document.getElementById('demand-regenerativeEnergyValue').textContent.replace(/[^0-9.]/g, '')),
+        thirdPartyEnergyValue: parseFloat(document.getElementById('demand-thirdPartyEnergyValue').textContent.replace(/[^0-9.]/g, '')),
+        efficiencyHValue: parseFloat(document.getElementById('demand-efficiencyHValue').textContent),
+        efficiencyECValue: parseFloat(document.getElementById('demand-efficiencyECValue').textContent),
+        hydrogen: parseInt(document.getElementById('demand-hydrogen').value.replace(/\s/g, ''), 10),
+        utilizationGas: parseFloat(document.getElementById('demand-iedm-utilizationGas').value),
+        utilizationAmmonia: parseFloat(document.getElementById('demand-iedm-utilizationAmmonia').value),
+        utilizationMethanol: parseFloat(document.getElementById('demand-iedm-utilizationMethanol').value),
+        priceGas: parseFloat(document.getElementById('demand-iedm-priceGas').value),
+        priceAmmonia: parseFloat(document.getElementById('demand-iedm-priceAmmonia').value),
+        priceMethanol: parseFloat(document.getElementById('demand-iedm-priceMethanol').value),
+        elecGeneration: electricityValue,
+        coolGeneration: coolingValue,
+        electricityCost: electricityCost,
+        electricityPercentage: electricityPercentage,
+        coolingPercentage: coolingPercentage,
+        installedUnitsHValue: installedUnitsHValue,
+        installedUnitsECValue: installedUnitsECValue,
+        intakeHours: parseFloat(document.getElementById('demand-intakeHours').value),
+        intakeOPPFactor: parseFloat(document.getElementById('demand-intakeOPPFactor').value),
+        outputHours: outputHours,
+        outputOPPFactor: outputOPPFactor,
+        regenerativePercentage: parseFloat(document.getElementById('demand-regenerativePercentage').textContent),
+        thirdPartyPercentage: parseFloat(document.getElementById('demand-thirdPartyPercentage').textContent),
+        installedEffectHValue: installedEffectHValueKW,
+        installedEffectECValue: installedEffectECKW,  
+        demandElectricity: parseInt(document.getElementById('demand-electricityValue').textContent.replace(/\s/g, ''), 10),
+        demandCooling: parseInt(document.getElementById('demand-coolingValue').textContent.replace(/\s/g, ''), 10),
+    });
+}
+
+function demandHandlePercentageChange(changedInput, otherInput) {
+    const changedValue = demandParseFormattedNumber(changedInput.value);
+    const newValue = Math.min(100, Math.max(0, changedValue));
+    changedInput.value = demandFormatNumber(newValue, 1);
+    otherInput.value = demandFormatNumber(100 - newValue, 1);
+    
+    // Calculate and update cogeneration efficiency immediately
+    const electricityPercentage = parseFloat(document.getElementById('demand-electricity').value);
+    const coolingPercentage = parseFloat(document.getElementById('demand-cooling').value);
+    const newEfficiency = demandCalculateCogenerationEfficiency(electricityPercentage, coolingPercentage);
+    document.getElementById('demand-efficiencyECValue').textContent = newEfficiency;
+    
+    demandUpdateDisplays();
+}
+
+function demandCreateStepper(input, initialStep, min, max, isPercentage = false) {
+    const upButton = document.getElementById(input.id + 'Up');
+    const downButton = document.getElementById(input.id + 'Down');
+    let step = initialStep;
+
+    function updateValue(increment) {
+        let value = demandParseFormattedNumber(input.value);
+        if (input.id === 'demand-energyDemand') {
+            step = demandEnergyDemandStep;
+        } else if (input.id === 'demand-electricity' || input.id === 'demand-cooling') {
+            step = demandElectricityCoolingStep;
+        }
+        value = Math.max(min, Math.min(max, value + increment * step));
+        if (input.id === 'demand-energyDemand') {
+            value = Math.round(value / step) * step;
+            demandEnergyDemandKWh = demandIsKWh ? value : value * 1000;
+        }
+        input.value = demandFormatNumber(value, input.id === 'demand-electricityCost' ? 3 : (input.id === 'demand-energyDemand' ? (demandIsKWh ? 0 : 2) : 1));
+        if (isPercentage) {
+            demandHandlePercentageChange(input, input === document.getElementById('demand-electricity') ? document.getElementById('demand-cooling') : document.getElementById('demand-electricity'));
+        } else {
+            demandUpdateDisplays();
+        }
+    }
+
+    function handleButtonPress(increment) {
+        let intervalId = null;
+        
+        function startIncrement() {
+            updateValue(increment);
+            intervalId = setInterval(() => updateValue(increment), 100);
+        }
+        
+        function stopIncrement() {
+            if (intervalId) {
+                clearTimeout(intervalId);
+                intervalId = null;
+            }
+        }
+        
+        const button = increment > 0 ? upButton : downButton;
+        button.addEventListener('mousedown', startIncrement);
+        button.addEventListener('mouseup', stopIncrement);
+        button.addEventListener('mouseleave', stopIncrement);
+    }
+
+    handleButtonPress(1);  // For up button
+    handleButtonPress(-1); // For down button
+
+    input.addEventListener('input', function() {
+        let value = demandParseFormattedNumber(this.value);
+        if (!isNaN(value)) {
+            value = Math.max(min, Math.min(max, value));
+            if (this.id === 'demand-energyDemand') {
+                value = Math.round(value / demandEnergyDemandStep) * demandEnergyDemandStep;
+                demandEnergyDemandKWh = demandIsKWh ? value : value * 1000;
+            }
+            this.value = demandFormatNumber(value, this.id === 'demand-electricityCost' ? 3 : (this.id === 'demand-energyDemand' ? (demandIsKWh ? 0 : 2) : 1));
+            if (isPercentage) {
+                demandHandlePercentageChange(this, this === document.getElementById('demand-electricity') ? document.getElementById('demand-cooling') : document.getElementById('demand-electricity'));
+            } else {
+                demandUpdateDisplays();
+            }
+        }
+    });
+
+    input.addEventListener('blur', function() {
+        let value = demandParseFormattedNumber(this.value);
+        if (isNaN(value)) {
+            value = 0;
+        }
+        if (this.id === 'demand-energyDemand') {
+            value = Math.round(value / demandEnergyDemandStep) * demandEnergyDemandStep;
+            demandEnergyDemandKWh = demandIsKWh ? value : value * 1000;
+        }
+        this.value = demandFormatNumber(value, this.id === 'demand-electricityCost' ? 3 : (this.id === 'demand-energyDemand' ? (demandIsKWh ? 0 : 2) : 1));
+        demandUpdateDisplays();
+    });
+}
+
+function demandUpdateApValue(input, increment) {
+    let value = parseFloat(input.value);
+    const param = input.dataset.param;
+    let min, max, step;
+
+    switch(param) {
+        case 'intakeHours':
+        case 'outputHours':
+            min = 1; max = 24; step = 0.5;
+            break;
+        case 'dss':
+            min = 0; max = 100; step = 1;
+            break;
+        default: // for both OP-P Factors
+            min = 1.0; max = 10.0; step = 0.1;
+    }
+
+    value = Math.min(max, Math.max(min, value + increment * step));
+    input.value = value.toFixed(param === 'dss' ? 0 : 1);
+
+    demandUpdateApImpactIndicator(param, value, min, max);
+    demandUpdateDisplays();
+}
+
+function demandUpdateApImpactIndicator(param, value, min, max) {
+    const indicator = document.getElementById(`demand-${param}Impact`);
+    const percentage = ((value - min) / (max - min)) * 100;
+    indicator.style.width = `${percentage}%`;
+
+    if (param === 'intakeHours' || param === 'outputHours') {
+        indicator.style.backgroundColor = percentage < 33 ? 'var(--demand-low-efficiency)' : 
+                                          percentage < 66 ? 'var(--demand-medium-efficiency)' : 
+                                          'var(--demand-high-efficiency)';
+    } else {
+        indicator.style.backgroundColor = percentage < 33 ? 'var(--demand-high-efficiency)' : 
+                                          percentage < 66 ? 'var(--demand-medium-efficiency)' : 
+                                          'var(--demand-low-efficiency)';
+    }
+}
+
+function demandHandleApButtonPress(button, action) {
+    const input = button.parentNode.querySelector('.demand-ap-stepper-input');
+    const increment = action === 'increment' ? 1 : -1;
+    demandUpdateApValue(input, increment);
+
+    let intervalId = setInterval(() => {
+        demandUpdateApValue(input, increment);
+    }, 150);
+
+    function stopIncrement() {
+        clearInterval(intervalId);
+        document.removeEventListener('mouseup', stopIncrement);
+        button.removeEventListener('mouseleave', stopIncrement);
+    }
+
+    document.addEventListener('mouseup', stopIncrement);
+    button.addEventListener('mouseleave', stopIncrement);
+}
+
+function demandDebounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function demandSetInitialState() {
+    document.querySelectorAll('.demand-energy-unit').forEach(el => {
+        el.textContent = 'kWh/Day';
+    });
+    document.getElementById('demand-unitToggle').textContent = 'Use MWh';
+    document.getElementById('demand-installedEffectHUnit').textContent = 'kW';
+    document.getElementById('demand-installedEffectECUnit').textContent = 'kW';
+    
+    // Set initial electricity and cooling percentages
+    document.getElementById('demand-electricity').value = 50;
+    document.getElementById('demand-cooling').value = 50;
+    
+    // Calculate and set initial cogeneration efficiency
+    const initialEfficiency = demandCalculateCogenerationEfficiency(50, 50);
+    document.getElementById('demand-efficiencyECValue').textContent = initialEfficiency;
+    
+    demandUpdateDisplays();
+}
+
+function demandInitialize() {
+    demandCreateStepper(document.getElementById('demand-energyDemand'), demandEnergyDemandStep, 0, Infinity);
+    demandCreateStepper(document.getElementById('demand-electricity'), demandElectricityCoolingStep, 0, 100, true);
+    demandCreateStepper(document.getElementById('demand-cooling'), demandElectricityCoolingStep, 0, 100, true);
+    demandCreateStepper(document.getElementById('demand-hydrogen'), 50, 0, Infinity);
+    demandCreateStepper(document.getElementById('demand-electricityCost'), 0.001, 0, Infinity);
+
+    document.getElementById('demand-unitToggle').addEventListener('click', function() {
+        demandIsKWh = !demandIsKWh;
+        this.textContent = demandIsKWh ? 'Use MWh' : 'Use kWh';
+        document.querySelectorAll('.demand-energy-unit').forEach(el => {
+            el.textContent = demandIsKWh ? 'kWh/Day' : 'MWh/Day';
+        });
+        if (demandIsKWh) {
+            demandEnergyDemandStep = 500;
+        } else {
+            demandEnergyDemandStep = 0.5;
+        }
+        
+        // Update unit display for Installed Effect
+        document.getElementById('demand-installedEffectHUnit').textContent = demandIsKWh ? 'kW' : 'MW';
+        document.getElementById('demand-installedEffectECUnit').textContent = demandIsKWh ? 'kW' : 'MW';
+
+        demandUpdateDisplays();
+    });
+
+    // Additional Parameters Dropdown
+    const apDropdownHeader = document.getElementById('demand-apDropdownHeader');
+    const apDropdownContent = document.getElementById('demand-apDropdownContent');
+    const apDropdownArrow = apDropdownHeader.querySelector('.demand-ap-dropdown-arrow');
+
+    apDropdownHeader.addEventListener('click', function() {
+        apDropdownContent.classList.toggle('show');
+        apDropdownArrow.textContent = apDropdownContent.classList.contains('show') ? '▲' : '▼';
+    });
+
+    document.querySelectorAll('.demand-ap-stepper-button').forEach(button => {
+        button.addEventListener('mousedown', function() {
+            demandHandleApButtonPress(this, this.dataset.action);
+        });
+    });
+
+    document.querySelectorAll('.demand-ap-stepper-input').forEach(input => {
+        input.addEventListener('blur', function() {
+            demandUpdateApValue(this, 0);
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                demandUpdateApValue(this, 0);
+            }
+        });
+    });
+
+    // Initialize impact indicators for additional parameters
+    document.querySelectorAll('.demand-ap-stepper-input').forEach(input => {
+        demandUpdateApValue(input, 0);
+    });
+
+    // Add event listener for electricity cost input
+    document.getElementById('demand-electricityCost').addEventListener('input', function() {
+        const value = demandParseFormattedNumber(this.value);
+        demandUpdateElectricityCostBackground(value);
+    });
+
+    // Debounced version of updateDisplays
+    const debouncedUpdateDisplays = demandDebounce(demandUpdateDisplays, 300);
+
+    // Add event listeners to all relevant inputs
+    const relevantInputs = [
+        'demand-energyDemand', 'demand-hydrogen', 'demand-electricityCost', 'demand-electricity', 'demand-cooling'
+    ];
+
+    relevantInputs.forEach(inputId => {
+        document.getElementById(inputId).addEventListener('input', debouncedUpdateDisplays);
+    });
+
+    // Add event listeners to additional parameters
+    document.querySelectorAll('.demand-ap-stepper-input').forEach(input => {
+        input.addEventListener('input', debouncedUpdateDisplays);
+    });
+
+    // Add event listener to the regenerative percentage change
+    document.querySelector('.demand-iedm-slider-bar').addEventListener('mouseup', debouncedUpdateDisplays);
+    document.querySelector('.demand-iedm-slider-bar').addEventListener('touchend', debouncedUpdateDisplays);
+
+    // Set initial state
+    demandSetInitialState();
+
+    // Initialize all modules
+    DemandUnifiedEnergyModule.init();
+    DemandFuelPowerModule.init();
+}
+
+// Initialize the module when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', demandInitialize);
+
+// Event listeners for parent communication
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'parentResized') {
+        const newHeight = event.data.height;
+        const sliderBar = document.querySelector('.demand-iedm-slider-bar');
+        if (sliderBar) {
+            sliderBar.style.height = `${newHeight - 40}px`;
+            DemandUnifiedEnergyModule.setBarHeights(parseFloat(document.getElementById('demand-regenerativePercentage').textContent));
+        }
+    } else if (event.data.type === 'parentReady') {
+        DemandUnifiedEnergyModule.init();
+    } else if (event.data.type === 'stateUpdate') {
+        updateLocalState(event.data.state);
+    }
+});
+
+function updateParentState(newState) {
+    window.parent.postMessage({type: 'updateState', state: newState}, '*');
+}
+
+function updateLocalState(newState) {
+    // Update energy demand
+    if (newState.energyDemand !== undefined) {
+        document.getElementById('demand-energyDemand').value = newState.energyDemand;
+    }
+
+    // Update electricity percentage
+    if (newState.electricityPercentage !== undefined) {
+        document.getElementById('demand-electricity').value = newState.electricityPercentage;
+    }
+
+    // Update cooling percentage
+    if (newState.coolingPercentage !== undefined) {
+        document.getElementById('demand-cooling').value = newState.coolingPercentage;
+    }
+
+    // Update hydrogen production
+    if (newState.hydrogen !== undefined) {
+        document.getElementById('demand-hydrogen').value = newState.hydrogen;
+    }
+
+    // Update electricity cost
+    if (newState.electricityCost !== undefined) {
+        document.getElementById('demand-electricityCost').value = newState.electricityCost;
+    }
+
+    // Update intake hours
+    if (newState.intakeHours !== undefined) {
+        document.getElementById('demand-intakeHours').value = newState.intakeHours;
+    }
+
+    // Update intake OP-P factor
+    if (newState.intakeOPPFactor !== undefined) {
+        document.getElementById('demand-intakeOPPFactor').value = newState.intakeOPPFactor;
+    }
+
+    // Update output hours
+    if (newState.outputHours !== undefined) {
+        document.getElementById('demand-outputHours').value = newState.outputHours;
+    }
+
+    // Update output OP-P factor
+    if (newState.outputOPPFactor !== undefined) {
+        document.getElementById('demand-outputOPPFactor').value = newState.outputOPPFactor;
+    }
+
+    // Update DSS (Direct Supply from Source)
+    if (newState.dss !== undefined) {
+        document.getElementById('demand-dss').value = newState.dss;
+    }
+
+    // Update regenerative energy percentage
+    if (newState.regenerativePercentage !== undefined) {
+        document.getElementById('demand-regenerativePercentage').textContent = newState.regenerativePercentage + '%';
+    }
+
+    // Update third party energy percentage
+    if (newState.thirdPartyPercentage !== undefined) {
+        document.getElementById('demand-thirdPartyPercentage').textContent = newState.thirdPartyPercentage + '%';
+    }
+
+    // Update fuel utilization percentages
+    if (newState.utilizationGas !== undefined) {
+        document.getElementById('demand-iedm-utilizationGas').value = newState.utilizationGas;
+    }
+    if (newState.utilizationAmmonia !== undefined) {
+        document.getElementById('demand-iedm-utilizationAmmonia').value = newState.utilizationAmmonia;
+    }
+    if (newState.utilizationMethanol !== undefined) {
+        document.getElementById('demand-iedm-utilizationMethanol').value = newState.utilizationMethanol;
+    }
+
+    // Update fuel prices
+    if (newState.priceGas !== undefined) {
+        document.getElementById('demand-iedm-priceGas').value = newState.priceGas;
+    }
+    if (newState.priceAmmonia !== undefined) {
+        document.getElementById('demand-iedm-priceAmmonia').value = newState.priceAmmonia;
+    }
+    if (newState.priceMethanol !== undefined) {
+        document.getElementById('demand-iedm-priceMethanol').value = newState.priceMethanol;
+    }
+
+    // After updating all inputs, recalculate and update displays
+    demandUpdateDisplays();
+
+    // Update the energy distribution slider
+    if (newState.regenerativePercentage !== undefined) {
+        DemandUnifiedEnergyModule.setBarHeights(newState.regenerativePercentage);
+    }
+}
+
+
+
+
+// Ensure the slider is initialized when the module is loaded
+window.addEventListener('load', function() {
+    DemandUnifiedEnergyModule.init();
+});
+</script>
+</body>
+</html>

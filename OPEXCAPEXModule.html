@@ -1,0 +1,514 @@
+<!--OPEXCAPEXModule 222.7.2 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPEX/CAPEX Module - Refined Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #2c3e50;
+            --bg-secondary: #34495e;
+            --bg-tertiary: #3a506b;
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --accent-primary: #3498db;
+            --accent-secondary: #2ecc71;
+            --button-color: #4a6fa5;
+            --input-bg: #2c3e50;
+            --input-border: #3498db;
+            --input-text: #ecf0f1;
+            --opex-input-width: 70%;
+            --capex-input-width: 70%;
+            --input-text-gap: 20px;
+            --input-box-width: 100px;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .flex { display: flex; }
+        .w-full { width: 100%; }
+        .w-1\/3 { width: 33.333333%; }
+        .w-2\/3 { width: 66.666667%; }
+        .p-2 { padding: 0.5rem; }
+        .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .shadow-sm { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        .font-semibold { font-weight: 600; }
+        .text-xl { font-size: 1.25rem; }
+        .grid { display: grid; }
+        .grid-cols-5 { grid-template-columns: 2fr 3fr; }
+        .gap-2 { gap: 0.5rem; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+
+        .combined-container {
+            display: flex;
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .combined-container:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .image-container {
+            flex: 2;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: var(--bg-tertiary);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .content-container {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .content-container h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 2px solid var(--bg-tertiary);
+            width: var(--capex-input-width);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            text-align: left;
+	        padding-left: 5em;
+        }
+
+        .content-container h4 i {
+            margin-right: 0.5rem;
+            color: var(--accent-primary);
+        }
+
+        .input-control {
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: bold;
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            background-color: var(--button-color);
+        }
+
+        .input-control:hover {
+            filter: brightness(1.2);
+            transform: scale(1.05);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+            width: var(--capex-input-width);
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-right: auto;
+        }
+
+        .unit-text {
+            flex-shrink: 0;
+            white-space: nowrap;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-left: var(--input-text-gap);
+            font-size: 0.9em;
+        }
+
+        input[type="text"] {
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--input-text);
+            width: var(--input-box-width);
+            min-width: var(--input-box-width);
+            text-align: center;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent-primary);
+        }
+
+        input[type="text"].changed {
+            animation: pulse 0.5s ease-in-out;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        h2, h3, h4 {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 0.5em;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .section-title i {
+            margin-right: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .opex-container, .capex-container {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .opex-title, .capex-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .opex-title i, .capex-title i {
+            margin-right: 0.5rem;
+        }
+
+        .opex-content {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .column-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-primary);
+            z-index: 10;
+            padding: 1rem 0;
+        }
+
+        .scrollable-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .scrollable-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 5px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+
+        .flex.w-full.px-5 {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .opex .input-group,
+        .capex .input-group {
+            width: var(--opex-input-width);
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="flex w-full px-5">
+    <div class="w-1/3 p-2 column-container opex" style="padding-left: 0.625rem; padding-right: 1.25rem;">
+        <div class="sticky-header">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> OPEX</h2>
+        </div>
+        <div class="scrollable-content">
+            <div class="opex-container">
+                <h3 class="opex-title"><i class="fas fa-tools"></i> Service & Maintenance Cost</h3>
+                <div class="opex-content">
+                    <div class="input-group">
+                        <div class="input-control" onmousedown="startChanging('opex-service-cost', -0.1)" onmouseup="stopChanging()" onmouseleave="stopChanging()">-</div>
+                        <input type="text" id="opex-service-cost" value="4.0" readonly>
+                        <div class="input-control" onmousedown="startChanging('opex-service-cost', 0.1)" onmouseup="stopChanging()" onmouseleave="stopChanging()">+</div>
+                        <span class="unit-text">% of Generation Costs</span>
+                    </div>
+                </div>
+            </div>
+            <div class="opex-container">
+                <h3 class="opex-title"><i class="fas fa-dollar-sign"></i> Other Costs</h3>
+                <div class="opex-content">
+                    <div class="input-group">
+                        <div class="input-control" onmousedown="startChanging('opex-other-costs', -0.1)" onmouseup="stopChanging()" onmouseleave="stopChanging()">-</div>
+                        <input type="text" id="opex-other-costs" value="0.0" readonly>
+                        <div class="input-control" onmousedown="startChanging('opex-other-costs', 0.1)" onmouseup="stopChanging()" onmouseleave="stopChanging()">+</div>
+                        <span class="unit-text">% of Production Costs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-2/3 p-2 column-container capex" style="padding-left: 1.25rem; padding-right: 2rem;">
+    <div class="sticky-header">
+        <h2 class="section-title"><i class="fas fa-building"></i> CAPEX</h2>
+    </div>
+    <div class="scrollable-content">
+        <div class="capex-container">
+            <h3 class="capex-title"><i class="fas fa-money-bill-wave"></i>Hardware Cost</h3>
+            <div class="opex-content">
+                <!-- Hidden input for capex-initial-investment -->
+                <div class="input-group" style="display: none;">
+                    <input type="text" id="capex-initial-investment" value="0" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="combined-container">
+            <div class="image-container">
+                <img src="Images/HydrogenGenerator.png" alt="Hydrogen Generator">
+            </div>
+            <div class="content-container">
+                <h4 class="font-semibold mb-2"><i class="fas fa-bolt"></i> FuelGen [Electro-Cavitation Hydrogen Generator]</h4>
+                <div class="input-group">
+                    <div class="input-control" onmousedown="startChanging('capex-fuelgen-cost', -50)" onmouseup="stopChanging()" onmouseleave="stopChanging()">-</div>
+                    <input type="text" id="capex-fuelgen-cost" value="6 000" readonly>
+                    <div class="input-control" onmousedown="startChanging('capex-fuelgen-cost', 50)" onmouseup="stopChanging()" onmouseleave="stopChanging()">+</div>
+                    <span class="unit-text">$/UNIT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="combined-container">
+            <div class="image-container">
+                <img src="Images/CslgElectricity.png" alt="CSLG Electricity">
+            </div>
+            <div class="content-container">
+                <h4 class="font-semibold mb-2"><i class="fas fa-plug"></i> CSLG [Combustion Stirling Linear Generator]</h4>
+                <div class="input-group">
+                    <div class="input-control" onmousedown="startChanging('capex-cslg-cost', -50)" onmouseup="stopChanging()" onmouseleave="stopChanging()">-</div>
+                    <input type="text" id="capex-cslg-cost" value="5 000" readonly>
+                    <div class="input-control" onmousedown="startChanging('capex-cslg-cost', 50)" onmouseup="stopChanging()" onmouseleave="stopChanging()">+</div>
+                    <span class="unit-text">$/UNIT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="combined-container">
+            <div class="image-container">
+                <img src="Images/CslgAC.png" alt="CSLG AC">
+            </div>
+            <div class="content-container">
+                <h4 class="font-semibold mb-2"><i class="fas fa-snowflake"></i> CSLG - AC [Cooling Extension]</h4>
+                <div class="input-group">
+                    <div class="input-control" onmousedown="startChanging('capex-cslg-ac-cost', -50)" onmouseup="stopChanging()" onmouseleave="stopChanging()">-</div>
+                    <input type="text" id="capex-cslg-ac-cost" value="6 800" readonly>
+                    <div class="input-control" onmousedown="startChanging('capex-cslg-ac-cost', 50)" onmouseup="stopChanging()" onmouseleave="stopChanging()">+</div>
+                    <span class="unit-text">$/UNIT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="combined-container">
+            <div class="image-container">
+                <img src="Images\combination_0_0.png" alt="Other Hardware">
+            </div>
+            <div class="content-container">
+                <h4 class="font-semibold mb-2"><i class="fas fa-microchip"></i> Other Hardware</h4>
+                <div class="input-group">
+                    <div class="input-control" onmousedown="startChanging('capex-other-hardware', -0.1)" onmouseup="stopChanging()" onmouseleave="stopChanging()">-</div>
+                    <input type="text" id="capex-other-hardware" value="30.0" readonly>
+                    <div class="input-control" onmousedown="startChanging('capex-other-hardware', 0.1)" onmouseup="stopChanging()" onmouseleave="stopChanging()">+</div>
+                    <span class="unit-text">% of total hardware cost</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'stateUpdate') {
+        console.log('Received state update:', event.data.state);
+    }
+});
+
+function updateParentState(newState) {
+    window.parent.postMessage({type: 'updateState', state: newState}, '*');
+}
+
+let changeInterval;
+
+function startChanging(inputId, change) {
+    changeValue(inputId, change);
+    changeInterval = setInterval(() => changeValue(inputId, change), 100);
+}
+
+function stopChanging() {
+    clearInterval(changeInterval);
+}
+
+function changeValue(inputId, change) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        if (inputId === 'capex-initial-investment') {
+            // Always keep capex-initial-investment at 0
+            input.value = '0';
+        } else {
+            let value = parseFloat(input.value.replace(/\s/g, ''));
+            value += change;
+            value = Math.max(0, value);
+            
+            const wholeNumberInputs = ['capex-fuelgen-cost', 'capex-cslg-cost', 'capex-cslg-ac-cost'];
+            if (wholeNumberInputs.includes(inputId)) {
+                value = Math.round(value);
+            } else {
+                value = Math.round(value * 10) / 10;
+            }
+            
+            input.value = formatNumber(value, inputId);
+            
+            input.classList.add('changed');
+            setTimeout(() => input.classList.remove('changed'), 300);
+        }
+
+        updateCalculations();
+    }
+}
+
+function formatNumber(num, inputId) {
+    const wholeNumberInputs = ['capex-fuelgen-cost', 'capex-cslg-cost', 'capex-cslg-ac-cost'];
+    if (wholeNumberInputs.includes(inputId)) {
+        return num.toLocaleString('en-US', {maximumFractionDigits: 0}).replace(/,/g, ' ');
+    } else {
+        return num.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1}).replace(/,/g, ' ');
+    }
+}
+
+function parseFormattedNumber(value) {
+    return parseFloat(value.replace(/\s/g, ''));
+}
+
+function updateCalculations() {
+    const serviceCost = parseFloat(document.getElementById('opex-service-cost').value);
+    const otherCosts = parseFloat(document.getElementById('opex-other-costs').value);
+    const capexFuelgenCost = parseFormattedNumber(document.getElementById('capex-fuelgen-cost').value);
+    const capexCslgCost = parseFormattedNumber(document.getElementById('capex-cslg-cost').value);
+    const capexCslgAcCost = parseFormattedNumber(document.getElementById('capex-cslg-ac-cost').value);
+    const capexInitialInvestment = 0; // Always use 0 for calculations
+    const capexOtherHardware = parseFloat(document.getElementById('capex-other-hardware').value);
+    
+    updateParentState({
+        serviceCost: serviceCost,
+        otherCosts: otherCosts,
+        capexFuelgenCost: capexFuelgenCost,
+        capexCslgCost: capexCslgCost,
+        capexCslgAcCost: capexCslgAcCost,
+        capexInitialInvestment: capexInitialInvestment,
+        capexOtherHardware: capexOtherHardware
+    });
+
+    console.log('OPEX/CAPEX values updated:', { 
+        serviceCost, otherCosts, capexFuelgenCost, capexCslgCost, capexCslgAcCost, capexInitialInvestment, capexOtherHardware 
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('capex-initial-investment').value = '0';
+    
+    document.getElementById('opex-service-cost').addEventListener('change', updateCalculations);
+    document.getElementById('opex-other-costs').addEventListener('change', updateCalculations);
+    document.getElementById('capex-fuelgen-cost').addEventListener('change', updateCalculations);
+    document.getElementById('capex-cslg-cost').addEventListener('change', updateCalculations);
+    document.getElementById('capex-cslg-ac-cost').addEventListener('change', updateCalculations);
+    document.getElementById('capex-initial-investment').addEventListener('change', updateCalculations);
+    document.getElementById('capex-other-hardware').addEventListener('change', updateCalculations);
+
+    updateCalculations();
+});
+</script>
+</body>
+</html>
